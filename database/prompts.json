@@ -1,0 +1,34 @@
+[
+  {
+    "id": "prompt-001",
+    "title": "Tạo Công Thức Bánh Croissant Sáng Tạo",
+    "description": "Một prompt được thiết kế để yêu cầu AI tạo ra một công thức làm bánh croissant hoàn toàn mới, kết hợp các hương vị độc đáo.",
+    "basePrompt": "Với vai trò là một Bếp trưởng R&D Bakery chuyên nghiệp với 20 năm kinh nghiệm, hãy sáng tạo một công thức chi tiết cho một loại bánh croissant độc đáo kết hợp hương vị Á Đông của {flavor_A} và hương vị phương Tây của {flavor_B}. Hãy trình bày công thức theo từng bước, bao gồm cả mẹo và lý do cho các lựa chọn kỹ thuật của bạn.",
+    "techniqueCategory": "PHẦN 1: KỸ THUẬT CƠ BẢN",
+    "primaryTechnique": "Role Prompting (Persona Setting)",
+    "secondaryTechniques": [
+      "Instruction Prompting",
+      "Few-Shot Prompting"
+    ],
+    "useCase": "Creative generation",
+    "parameters": [
+      {
+        "name": "flavor_A",
+        "type": "text",
+        "defaultValue": "trà xanh matcha"
+      },
+      {
+        "name": "flavor_B",
+        "type": "text",
+        "defaultValue": "quả mâm xôi (raspberry)"
+      }
+    ],
+    "examples": [
+      {
+        "input": "Hương vị A: Dứa, Hương vị B: Dừa",
+        "output": "(Ví dụ về một công thức croissant dứa-dừa...)"
+      }
+    ],
+    "notes": "Prompt này hoạt động hiệu quả nhất với các model có khả năng suy luận sáng tạo cao như GPT-4 hoặc Claude 3. Điều chỉnh nhiệt độ (temperature) lên khoảng 0.75 để có kết quả tốt nhất."
+  }
+]
