@@ -1,0 +1,23 @@
+{
+  "name": "prompt-nebula",
+  "version": "1.0.0",
+  "description": "A command center for creating, managing, and reusing AI prompts, designed for local use.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"No tests available, but setup is valid.\" && exit 0"
+  },
+  "keywords": [
+    "ai",
+    "prompt",
+    "prompt-engineering",
+    "llm"
+  ],
+  "author": "Jules for User",
+  "license": "ISC",
+  "dependencies": {
+    "connect-history-api-fallback": "^2.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}

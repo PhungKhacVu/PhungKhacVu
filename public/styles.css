@@ -1,0 +1,239 @@
+:root {
+    --primary-bg: #0d0c1d;
+    --secondary-bg: #1a1a2e;
+    --sidebar-bg: #161625;
+    --accent-color: #e94560;
+    --glow-color: #f05a74;
+    --text-primary: #ffffff;
+    --text-secondary: #a9a9b3;
+    --border-color: #3e3e5b;
+    --font-title: 'Orbitron', sans-serif;
+    --font-body: 'Roboto', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--primary-bg);
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    text-align: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    text-shadow: 0 0 10px var(--glow-color);
+}
+
+header h1 a {
+    font-family: var(--font-title);
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    text-decoration: none;
+    letter-spacing: 2px;
+}
+
+header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+#app-container {
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 350px;
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+#new-prompt-btn {
+    background-color: var(--accent-color);
+    color: var(--text-primary);
+    border: none;
+    padding: 0.8rem;
+    font-size: 1rem;
+    font-family: var(--font-title);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
+}
+
+#new-prompt-btn:hover {
+    background-color: var(--glow-color);
+    box-shadow: 0 0 25px rgba(233, 69, 96, 0.8);
+}
+
+.search-filter input {
+    width: 100%;
+    padding: 0.7rem;
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+#prompt-list-nav {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+#prompt-list-nav .prompt-item {
+    padding: 0.8rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease;
+}
+
+#prompt-list-nav .prompt-item:hover {
+    background-color: var(--secondary-bg);
+}
+
+#prompt-list-nav .prompt-item.active {
+    background-color: var(--accent-color);
+    color: var(--primary-bg);
+}
+
+#prompt-list-nav .prompt-item h3 {
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+#prompt-list-nav .prompt-item.active h3 {
+    color: var(--primary-bg);
+}
+
+#prompt-list-nav .prompt-item p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+#prompt-list-nav .prompt-item.active p {
+    color: var(--primary-bg);
+}
+
+
+#main-content {
+    flex-grow: 1;
+    padding: 2rem;
+    background-color: var(--secondary-bg);
+    overflow-y: auto;
+}
+
+.welcome-screen {
+    text-align: center;
+    padding-top: 10rem;
+    color: var(--text-secondary);
+}
+
+.prompt-form-container, .prompt-view-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: var(--primary-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+button {
+    font-family: var(--font-title);
+    cursor: pointer;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.form-actions button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    color: var(--text-primary);
+}
+
+.form-actions .save-btn {
+    background-color: var(--accent-color);
+}
+
+.form-actions .delete-btn {
+    background-color: #555;
+}
+
+.form-actions .cancel-btn {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+}
+
+footer {
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    background-color: var(--sidebar-bg);
+}
+
+footer button {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem;
+    transition: all 0.2s ease;
+}
+
+footer button:hover {
+    background-color: var(--accent-color);
+    color: var(--text-primary);
+    border-color: var(--accent-color);
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--primary-bg);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color);
+}
