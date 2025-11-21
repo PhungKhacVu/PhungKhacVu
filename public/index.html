@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Nebula</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1><a href="/">PROMPT NEBULA</a></h1>
+        <p>Your Command Center for Creative AI</p>
+    </header>
+
+    <main id="app-container">
+        <!-- Main content will be rendered here by JavaScript -->
+        <div class="sidebar">
+            <button id="new-prompt-btn">+ New Prompt</button>
+            <div class="search-filter">
+                <input type="text" id="search-input" placeholder="Search prompts...">
+                <!-- Filters will be added here -->
+            </div>
+            <nav id="prompt-list-nav">
+                <!-- List of prompts will be populated here -->
+            </nav>
+        </div>
+        <div id="main-content">
+            <!-- Prompt details or form will be shown here -->
+             <div class="welcome-screen">
+                <h2>Welcome to Prompt Nebula</h2>
+                <p>Select a prompt from the list or create a new one to get started.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <button id="import-btn">Import</button>
+        <button id="export-btn">Export</button>
+        <input type="file" id="import-file-input" style="display: none;" accept=".json">
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

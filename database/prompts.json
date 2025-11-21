@@ -1,0 +1,254 @@
+[
+  {
+    "id": "prompt-001",
+    "title": "Tạo Công Thức Bánh Croissant Sáng Tạo",
+    "description": "Một prompt được thiết kế để yêu cầu AI tạo ra một công thức làm bánh croissant hoàn toàn mới, kết hợp các hương vị độc đáo.",
+    "basePrompt": "Với vai trò là một Bếp trưởng R&D Bakery chuyên nghiệp với 20 năm kinh nghiệm, hãy sáng tạo một công thức chi tiết cho một loại bánh croissant độc đáo kết hợp hương vị Á Đông của {flavor_A} và hương vị phương Tây của {flavor_B}. Hãy trình bày công thức theo từng bước, bao gồm cả mẹo và lý do cho các lựa chọn kỹ thuật của bạn.",
+    "techniqueCategory": "PHẦN 1: KỸ THUẬT CƠ BẢN",
+    "primaryTechnique": "Role Prompting (Persona Setting)",
+    "secondaryTechniques": ["Instruction Prompting"],
+    "useCase": "Creative generation",
+    "parameters": [
+      {"name": "flavor_A", "type": "text", "defaultValue": "trà xanh matcha"},
+      {"name": "flavor_B", "type": "text", "defaultValue": "quả mâm xôi (raspberry)"}
+    ],
+    "notes": "Hiệu quả cao với các model có khả năng sáng tạo (GPT-4, Claude 3)."
+  },
+  {
+    "id": "prompt-002",
+    "title": "Phân Tích Nguyên Nhân Bánh Hỏng (CoT)",
+    "description": "Sử dụng Chain-of-Thought để AI suy luận từng bước và chẩn đoán vấn đề trong công thức làm bánh.",
+    "basePrompt": "Bánh mì sourdough của tôi sau khi nướng có lớp vỏ rất cứng và bên trong thì đặc, không nở xốp. Hãy suy luận từng bước một, phân tích các nguyên nhân có thể xảy ra từ khâu chuẩn bị men, nhào bột, ủ bột, đến khâu nướng, và đề xuất giải pháp khắc phục cho từng nguyên nhân.",
+    "techniqueCategory": "PHẦN 2: KỸ THUẬT SUY LUẬN",
+    "primaryTechnique": "Chain-of-Thought (CoT)",
+    "secondaryTechniques": [],
+    "useCase": "Complex reasoning",
+    "parameters": [],
+    "notes": "Kỹ thuật này buộc AI phải giải thích logic của nó, giúp tìm ra lỗi sai một cách hệ thống."
+  },
+  {
+    "id": "prompt-003",
+    "title": "Tạo Mô Tả Sản Phẩm (Few-Shot)",
+    "description": "Cung cấp vài ví dụ để hướng dẫn AI tạo ra mô tả sản phẩm theo một định dạng và văn phong cụ thể.",
+    "basePrompt": "Dựa trên các ví dụ sau, hãy viết một mô tả sản phẩm hấp dẫn cho '{product_name}'.\n\nVí dụ 1:\nTên sản phẩm: Bánh Tart Chanh Dây\nMô tả: Một sự hòa quyện tinh tế giữa vị chua thanh mát của chanh dây tươi và lớp kem béo ngậy, trên nền đế bánh giòn rụm. Mỗi miếng cắn là một trải nghiệm sảng khoái, đánh thức mọi giác quan.\n\nVí dụ 2:\nTên sản phẩm: Bánh Mì Hoa Cúc\nMô tả: Mềm mại như mây, thơm lừng hương bơ Pháp hảo hạng và thoang thoảng mùi hoa cúc tự nhiên. Thớ bánh dai nhẹ, ngọt dịu, là lựa chọn hoàn hảo cho một bữa sáng thong thả hay buổi trà chiều ấm cúng.\n\nSản phẩm cần viết mô tả:\nTên sản phẩm: {product_name}",
+    "techniqueCategory": "PHẦN 1: KỸ THUẬT CƠ BẢN",
+    "primaryTechnique": "Few-Shot Prompting",
+    "secondaryTechniques": [],
+    "useCase": "Creative generation",
+    "parameters": [
+        {"name": "product_name", "type": "text", "defaultValue": "Bánh Opera Cà Phê"}
+    ],
+    "notes": "Rất hiệu quả để kiểm soát văn phong (tone) và định dạng (format) của đầu ra."
+  },
+  {
+    "id": "prompt-004",
+    "title": "Brainstorm Ý Tưởng Mới (Zero-Shot)",
+    "description": "Yêu cầu AI đưa ra ý tưởng nhanh chóng mà không cần ví dụ mẫu.",
+    "basePrompt": "Liệt kê 10 ý tưởng kết hợp hương vị độc đáo và chưa từng có cho bánh macaron, tập trung vào các nguyên liệu đặc sản của Việt Nam.",
+    "techniqueCategory": "PHẦN 1: KỸ THUẬT CƠ BẢN",
+    "primaryTechnique": "Zero-Shot Prompting",
+    "secondaryTechniques": [],
+    "useCase": "Simple classification",
+    "parameters": [],
+    "notes": "Tận dụng kiến thức nền rộng lớn của AI để khám phá các ý tưởng mới."
+  },
+  {
+    "id": "prompt-005",
+    "title": "Chẩn Đoán Nhanh (Zero-Shot CoT)",
+    "description": "Kích hoạt khả năng suy luận của AI cho một vấn đề mới mà không cần ví dụ, chỉ bằng một câu lệnh đơn giản.",
+    "basePrompt": "Lớp kem bơ (buttercream) của tôi bị tách nước (chảy nước). Hãy suy nghĩ từng bước một và cho tôi biết tại sao.",
+    "techniqueCategory": "PHẦN 2: KỸ THUẬT SUY LUẬN",
+    "primaryTechnique": "Zero-Shot CoT",
+    "secondaryTechniques": [],
+    "useCase": "Complex reasoning",
+    "parameters": [],
+    "notes": "Câu lệnh 'Hãy suy nghĩ từng bước một' là chìa khóa để kích hoạt chuỗi suy luận của AI."
+  },
+  {
+    "id": "prompt-006",
+    "title": "Đánh Giá Tính Khả Thi Của Ý Tưởng",
+    "description": "Đóng vai một nhà phê bình để đánh giá một ý tưởng một cách khách quan, sử dụng The Perspective Inversion.",
+    "basePrompt": "Tôi định tạo ra một loại bánh mì sourdough sử dụng nước cốt dừa thay cho một phần nước. Hãy đóng vai một 'người phản biện' (devil's advocate). Đưa ra các lập luận phản đối ý tưởng này, chỉ ra các vấn đề tiềm ẩn về hóa học, kết cấu, và hương vị có thể xảy ra. Sau đó, hãy bác bỏ chính những lập luận đó và đề xuất giải pháp để vượt qua các thách thức.",
+    "techniqueCategory": "PHẦN 2: KỸ THUẬT SUY LUẬN",
+    "primaryTechnique": "The Perspective Inversion",
+    "secondaryTechniques": ["Role Prompting"],
+    "useCase": "Strategic planning",
+    "parameters": [],
+    "notes": "Kỹ thuật này giúp lường trước các rủi ro và củng cố ý tưởng."
+  },
+  {
+    "id": "prompt-007",
+    "title": "So Sánh Kỹ Thuật Làm Bánh",
+    "description": "Yêu cầu AI giải thích các khái niệm phức tạp bằng cách so sánh chúng.",
+    "basePrompt": "Với vai trò là một giảng viên làm bánh, hãy giải thích sự khác biệt cơ bản về mặt kỹ thuật, kết cấu và ứng dụng giữa hai phương pháp làm bột: phương pháp trực tiếp (straight dough method) và phương pháp bột chua (sourdough method).",
+    "techniqueCategory": "PHẦN 1: KỸ THUẬT CƠ BẢN",
+    "primaryTechnique": "Role Prompting (Persona Setting)",
+    "secondaryTechniques": [],
+    "useCase": "Education",
+    "parameters": [],
+    "notes": "Gán vai trò chuyên gia giúp câu trả lời có chiều sâu và đáng tin cậy hơn."
+  },
+  {
+    "id": "prompt-008",
+    "title": "Tạo Bảng Dinh Dưỡng (Output Constraints)",
+    "description": "Buộc AI trả về kết quả dưới dạng một đối tượng JSON có cấu trúc cụ thể.",
+    "basePrompt": "Dựa trên công thức sau cho bánh {product_name}, hãy phân tích và ước tính thông tin dinh dưỡng cho mỗi khẩu phần. Trả về kết quả dưới dạng một đối tượng JSON và chỉ JSON mà thôi, không có bất kỳ văn bản giải thích nào khác.\n\nCông thức:\n{recipe}\n\nĐịnh dạng JSON yêu cầu:\n{\n  \"productName\": \"tên sản phẩm\",\n  \"servingSize\": \"kích thước khẩu phần (e.g., '1 cái, 80g')\",\n  \"calories\": số,\n  \"fat\": {\n    \"total\": \"Xg\",\n    \"saturated\": \"Xg\"\n  },\n  \"carbohydrates\": {\n    \"total\": \"Xg\",\n    \"sugar\": \"Xg\"\n  },\n  \"protein\": \"Xg\"\n}",
+    "techniqueCategory": "PHẦN 7: KỸ THUẬT CHUYÊN BIỆT",
+    "primaryTechnique": "Output Constraints",
+    "secondaryTechniques": ["Instruction Prompting"],
+    "useCase": "API responses, data pipelines",
+    "parameters": [
+      {"name": "product_name", "type": "text", "defaultValue": "Bông Lan Trứng Muối"},
+      {"name": "recipe", "type": "textarea", "defaultValue": "Bột mì: 100g, Trứng: 4 quả, Đường: 80g, Dầu ăn: 40ml, Sốt trứng muối: 100g..."}
+    ],
+    "notes": "Cực kỳ hữu ích khi cần dữ liệu đầu ra có cấu trúc để tích hợp với các hệ thống khác."
+  },
+  {
+    "id": "prompt-009",
+    "title": "Tạo Quy Trình R&D (Prompt Chaining)",
+    "description": "Chia một nhiệm vụ phức tạp thành nhiều prompt nhỏ hơn, output của prompt trước là input cho prompt sau.",
+    "basePrompt": "Nhiệm vụ: Phát triển một dòng sản phẩm bánh su kem (choux au craquelin) mới cho mùa hè.\n\nPrompt 1: Brainstorm ý tưởng (Bạn đang ở đây)\nVới vai trò là một chuyên gia R&D, hãy liệt kê 5 chủ đề hương vị độc đáo cho bánh su kem, phù hợp với không khí mùa hè, tập trung vào các loại trái cây nhiệt đới.\n\n---\n(Sau khi nhận được output, bạn sẽ sử dụng nó cho prompt tiếp theo)\n---\n\nPrompt 2: Lựa chọn và phát triển công thức\nDựa trên ý tưởng '{chosen_idea}' từ bước trước, hãy phát triển một công thức chi tiết cho cả phần vỏ bánh (choux), phần craquelin giòn, và phần nhân kem (pastry cream).",
+    "techniqueCategory": "PHẦN 3: KỸ THUẬT NÂNG CAO",
+    "primaryTechnique": "Prompt Chaining",
+    "secondaryTechniques": ["Role Prompting"],
+    "useCase": "Multi-step workflows, report generation",
+    "parameters": [
+      {"name": "chosen_idea", "type": "text", "defaultValue": "Su kem Xoài-Dừa"}
+    ],
+    "notes": "Mô phỏng một quy trình làm việc thực tế, giúp quản lý các nhiệm vụ phức tạp."
+  },
+  {
+    "id": "prompt-010",
+    "title": "Hiểu Về Nguyên Liệu (Generated Knowledge)",
+    "description": "Yêu cầu AI tự tạo ra một lượng kiến thức nền trước khi trả lời câu hỏi chính.",
+    "basePrompt": "Trước khi trả lời câu hỏi của tôi, hãy tạo ra một đoạn văn ngắn giải thích về các loại chất béo khác nhau thường dùng trong làm bánh (bơ, shortening, dầu ăn, margarine) và ảnh hưởng của chúng đến kết cấu cuối cùng của sản phẩm.\n\nSau khi đã có kiến thức nền đó, hãy trả lời câu hỏi sau: Để tạo ra một chiếc bánh quy vừa giòn ở viền nhưng lại mềm ở giữa, tôi nên sử dụng loại chất béo nào hoặc kết hợp chúng theo tỷ lệ nào là tối ưu nhất? Tại sao?",
+    "techniqueCategory": "PHẦN 3: KỸ THUẬT NÂNG CAO",
+    "primaryTechnique": "Generated Knowledge Prompting",
+    "secondaryTechniques": [],
+    "useCase": "Question answering, fact verification",
+    "parameters": [],
+    "notes": "Cải thiện đáng kể chất lượng câu trả lời khi AI cần một bối cảnh chuyên sâu."
+  },
+  {
+    "id": "prompt-011",
+    "title": "Lên Kế Hoạch Cho Buổi Workshop",
+    "description": "Sử dụng Self-Consistency để tạo ra nhiều phương án và chọn ra phương án đáng tin cậy nhất.",
+    "basePrompt": "Hãy tạo ra 3 kế hoạch chi tiết khác nhau cho một buổi workshop làm bánh mì sourdough kéo dài 3 giờ cho người mới bắt đầu. Mỗi kế hoạch phải bao gồm các mốc thời gian, nội dung chính cần truyền đạt, và các hoạt động thực hành. Sau đó, từ 3 kế hoạch đó, hãy tự tổng hợp lại thành một kế hoạch cuối cùng, tối ưu nhất bằng cách chọn lọc những điểm hay của cả ba.",
+    "techniqueCategory": "PHẦN 2: KỸ THUẬT SUY LUẬN",
+    "primaryTechnique": "Self-Consistency",
+    "secondaryTechniques": [],
+    "useCase": "Arithmetic reasoning, common sense tasks",
+    "parameters": [],
+    "notes": "Tăng độ tin cậy của câu trả lời bằng cách yêu cầu AI tự kiểm tra và bỏ phiếu cho phương án tốt nhất."
+  },
+  {
+    "id": "prompt-012",
+    "title": "Tối Ưu Hóa Quy Trình Bếp",
+    "description": "Sử dụng tư duy từ cơ chế (Mechanism First) để phân tích và cải thiện một quy trình.",
+    "basePrompt": "Hãy giải thích 'tại sao' (nguyên lý hóa học và vật lý) việc để bột bánh nghỉ (autolyse) chỉ với bột mì và nước trước khi thêm men và muối lại quan trọng. Sau đó, dựa trên nguyên lý đó, hãy đề xuất một quy trình tối ưu cho bước autolyse trong việc làm bánh mì baguette để đạt được lớp vỏ giòn và ruột bánh có nhiều lỗ khí lớn.",
+    "techniqueCategory": "PHẦN 2: KỸ THUẬT SUY LUẬN",
+    "primaryTechnique": "Bắt đầu từ Cơ chế (The Mechanism First)",
+    "secondaryTechniques": [],
+    "useCase": "Complex reasoning",
+    "parameters": [],
+    "notes": "Buộc AI phải hiểu sâu về 'tại sao' thay vì chỉ trả lời 'cái gì', dẫn đến các giải pháp có cơ sở khoa học."
+  },
+  {
+    "id": "prompt-013",
+    "title": "Tư Vấn Dựa Trên Dữ Liệu (RAG)",
+    "description": "Mô phỏng kỹ thuật RAG bằng cách cung cấp cho AI một 'tài liệu' kiến thức để trả lời câu hỏi.",
+    "basePrompt": "Dựa vào thông tin được cung cấp trong phần 'Kiến Thức Nền' dưới đây, hãy trả lời câu hỏi của người dùng.\n\n### KIẾN THỨC NỀN ###\n{knowledge_base}\n### HẾT KIẾN THỨC NỀN ###\n\nCâu hỏi: Tôi muốn làm bánh mì không chứa gluten, dựa vào kiến thức nền, loại bột nào là lựa chọn tốt nhất để thay thế bột mì và tôi cần lưu ý điều gì về liều lượng men?",
+    "techniqueCategory": "PHẦN 5: KỸ THUẬT AUGMENTATION & RETRIEVAL",
+    "primaryTechnique": "RAG (Retrieval Augmented Generation)",
+    "secondaryTechniques": ["Delimiters Usage"],
+    "useCase": "Chatbots, Q&A systems, documentation",
+    "parameters": [
+        {"name": "knowledge_base", "type": "textarea", "defaultValue": "- Bột kiều mạch (Buckwheat flour): Tạo cấu trúc tốt, hương vị đậm. Cần kết hợp với các loại bột khác.\n- Bột hạnh nhân (Almond flour): Ít carb, giàu protein, tạo độ ẩm. Bánh sẽ đặc hơn.\n- Bột dừa (Coconut flour): Hút ẩm rất mạnh, cần tăng lượng chất lỏng trong công thức.\n- Men nở (Yeast) hoạt động dựa trên đường và tinh bột. Các loại bột không gluten thường có ít tinh bột hơn, có thể cần thêm một ít đường hoặc mật ong để kích hoạt men hiệu quả."}
+    ],
+    "notes": "Giúp AI trả lời chính xác hơn và giảm thiểu việc 'bịa' thông tin. Dấu ### là một ví dụ về Delimiters."
+  },
+  {
+    "id": "prompt-014",
+    "title": "Loại Trừ Nguyên Liệu (Negative Prompting)",
+    "description": "Chỉ rõ cho AI những gì KHÔNG được làm hoặc đề cập đến.",
+    "basePrompt": "Hãy đề xuất 5 ý tưởng cho món tráng miệng mới cho nhà hàng của tôi. Yêu cầu quan trọng: các công thức này không được chứa các loại hạt (nuts) và không sử dụng lò nướng.",
+    "techniqueCategory": "PHẦN 6: KỸ THUẬT KIỂM SOÁT & BẢO MẬT",
+    "primaryTechnique": "Negative Prompting",
+    "secondaryTechniques": [],
+    "useCase": "Content filtering, brand safety",
+    "parameters": [],
+    "notes": "Một cách trực tiếp và hiệu quả để kiểm soát và giới hạn đầu ra của AI."
+  },
+  {
+    "id": "prompt-015",
+    "title": "Tạo Kế Hoạch Truyền Thông An Toàn (Constitutional AI)",
+    "description": "Đặt ra các nguyên tắc để AI tự điều chỉnh câu trả lời của mình cho phù hợp.",
+    "basePrompt": "Bối cảnh: Một khách hàng phàn nàn trên mạng xã hội rằng bánh của cửa hàng chúng ta bị mốc chỉ sau một ngày.\n\nHãy soạn một câu trả lời cho khách hàng này. Trước khi viết, hãy tuân thủ các nguyên tắc sau:\n1.  Luôn thể hiện sự đồng cảm và xin lỗi một cách chân thành.\n2.  Không bao giờ đổ lỗi cho khách hàng (ví dụ: 'do khách bảo quản sai cách').\n3.  Đề xuất một giải pháp cụ thể và mang lại lợi ích cho khách hàng (ví dụ: đổi sản phẩm mới và tặng kèm voucher).\n4.  Mời khách hàng thảo luận riêng tư để giải quyết vấn đề.\n\nDựa trên các nguyên tắc đó, hãy viết câu trả lời.",
+    "techniqueCategory": "PHẦN 6: KỸ THUẬT KIỂM SOÁT & BẢO MẬT",
+    "primaryTechnique": "Constitutional AI",
+    "secondaryTechniques": ["Role Prompting"],
+    "useCase": "Ensure ethical, safe responses",
+    "parameters": [],
+    "notes": "Huấn luyện AI hành xử theo một bộ quy tắc đạo đức định sẵn, rất quan trọng trong giao tiếp với khách hàng."
+  },
+  {
+    "id": "prompt-016",
+    "title": "Điều Chỉnh Độ Sáng Tạo (Temperature & Sampling)",
+    "description": "Minh họa cách nhiệt độ (temperature) ảnh hưởng đến tính sáng tạo của AI.",
+    "basePrompt": "Hãy viết 3 slogan khác nhau cho một thương hiệu bánh mì thủ công.\n\n1.  **Slogan 1 (Nhiệt độ thấp, ~0.2):** Cần một slogan an toàn, rõ ràng và tập trung vào chất lượng.\n2.  **Slogan 2 (Nhiệt độ trung bình, ~0.7):** Cần một slogan có chút sáng tạo, vần điệu nhưng vẫn dễ hiểu.\n3.  **Slogan 3 (Nhiệt độ cao, ~1.0):** Cần một slogan thật sự đột phá, có thể hơi trừu tượng và gây ấn tượng mạnh.",
+    "techniqueCategory": "PHẦN 7: KỸ THUẬT CHUYÊN BIỆT",
+    "primaryTechnique": "Temperature & Sampling Control",
+    "secondaryTechniques": [],
+    "useCase": "Balance creativity vs determinism",
+    "parameters": [],
+    "notes": "Mặc dù không thể trực tiếp điều khiển nhiệt độ qua prompt, prompt này giúp bạn hình dung và yêu cầu các loại output khác nhau tương ứng với các mức nhiệt độ."
+  },
+  {
+    "id": "prompt-017",
+    "title": "Khám Phá Công Thức Mới (Tree of Thoughts)",
+    "description": "Yêu cầu AI khám phá nhiều nhánh ý tưởng khác nhau và tự đánh giá để tìm ra hướng đi tốt nhất.",
+    "basePrompt": "Nhiệm vụ: Sáng tạo một công thức bánh donut (bánh rán) hoàn toàn mới lạ, chưa từng xuất hiện trên thị trường.\n\nHãy thực hiện theo quy trình Tree of Thoughts:\n1.  **Bước 1 (Brainstorm):** Liệt kê 3 hướng tiếp cận (nhánh) khác nhau để tạo sự mới lạ cho bánh donut (ví dụ: nhân bánh, lớp phủ, loại bột...).\n2.  **Bước 2 (Explore):** Với mỗi nhánh, phát triển sâu hơn 2-3 ý tưởng cụ thể.\n3.  **Bước 3 (Evaluate & Select):** Tự đánh giá ưu/nhược điểm của từng ý tưởng dựa trên các tiêu chí: tính độc đáo, tính khả thi, sức hấp dẫn thương mại. Cuối cùng, chọn ra 1 ý tưởng mà bạn cho là xuất sắc nhất và phát triển nó thành một công thức hoàn chỉnh.",
+    "techniqueCategory": "PHẦN 2: KỸ THUẬT SUY LUẬN",
+    "primaryTechnique": "Tree of Thoughts (ToT)",
+    "secondaryTechniques": [],
+    "useCase": "Game playing, strategic planning, creative problem solving",
+    "parameters": [],
+    "notes": "Rất mạnh cho các bài toán mở, cần sự sáng tạo có hệ thống."
+  },
+  {
+    "id": "prompt-018",
+    "title": "Tăng Cường Hiệu Suất (EmotionPrompt)",
+    "description": "Thêm một yếu tố cảm xúc vào prompt để khuyến khích AI hoạt động tốt hơn.",
+    "basePrompt": "Đây là một nhiệm vụ cực kỳ quan trọng đối với sự nghiệp của tôi.\n\nHãy đóng vai một chuyên gia marketing ẩm thực hàng đầu. Tôi cần một kế hoạch ra mắt sản phẩm bánh sừng bò hai màu (bi-color croissant) tại thị trường Việt Nam. Kế hoạch cần phải chi tiết, sáng tạo, và có khả năng tạo ra một cơn sốt truyền thông. Hãy dồn hết tâm huyết của bạn vào việc này.",
+    "techniqueCategory": "PHẦN 3: KỸ THUẬT NÂNG CAO",
+    "primaryTechnique": "EmotionPrompt",
+    "secondaryTechniques": ["Role Prompting"],
+    "useCase": "High-stakes tasks, important queries",
+    "parameters": [],
+    "notes": "Một kỹ thuật dựa trên tâm lý học, có thể cải thiện đáng kể chất lượng phản hồi cho các nhiệm vụ quan trọng."
+  },
+  {
+    "id": "prompt-019",
+    "title": "Tự Động Tra Cứu Thông Tin (ReAct - Mô phỏng)",
+    "description": "Mô phỏng quy trình Suy luận + Hành động (Reason + Act) để giải quyết một vấn đề cần thông tin bên ngoài.",
+    "basePrompt": "Hãy giải quyết câu hỏi sau bằng cách xen kẽ giữa Suy nghĩ và Hành động (giả lập).\n\n**Câu hỏi:** Tôi muốn làm một loại bánh mì ít đường, tốt cho người bị tiểu đường, nhưng vẫn phải mềm và ngon. Loại chất tạo ngọt tự nhiên nào là tốt nhất?\n\n**Quy trình của bạn:**\n-   **Suy nghĩ:** Tôi cần tìm hiểu về các chất tạo ngọt tự nhiên, chỉ số đường huyết (GI) của chúng, và khả năng chịu nhiệt khi nướng.\n-   **Hành động (giả lập):** `[Search(\"chất tạo ngọt tự nhiên an toàn cho người tiểu đường dùng trong làm bánh\")]`\n-   **Quan sát (giả lập):** (Bạn tự tóm tắt kết quả tìm kiếm được, ví dụ: 'Tìm thấy Stevia, Erythritol, và Allulose. Stevia bền nhiệt nhưng có hậu vị đắng. Erythritol chịu nhiệt tốt, vị ngọt mát. Allulose có vị giống đường nhất nhưng khó tìm mua hơn.')\n-   **Suy nghĩ:** Dựa trên thông tin này, Erythritol có vẻ là lựa chọn cân bằng nhất. Tôi sẽ đề xuất nó và đưa ra các lưu ý.\n-   **Trả lời:** (Trình bày câu trả lời cuối cùng).",
+    "techniqueCategory": "PHẦN 2: KỸ THUẬT SUY LUẬN",
+    "primaryTechnique": "ReAct (Reasoning + Acting)",
+    "secondaryTechniques": [],
+    "useCase": "Web search agents, API calling, code execution",
+    "parameters": [],
+    "notes": "Mặc dù AI không thực sự 'search', mô phỏng quy trình này giúp nó cấu trúc câu trả lời một cách logic và minh bạch hơn."
+  },
+  {
+    "id": "prompt-020",
+    "title": "Kết Hợp Kỹ Thuật Tổng Hợp",
+    "description": "Một prompt phức hợp, kết hợp nhiều kỹ thuật khác nhau để giải quyết một bài toán lớn.",
+    "basePrompt": "### BỐI CẢNH ###\nVới vai trò là Giám đốc R&D của một thương hiệu bánh ngọt cao cấp, bạn được giao nhiệm vụ phát triển một sản phẩm chủ lực mới cho mùa lễ hội cuối năm.\n\n### YÊU CẦU ###\nSử dụng các kỹ thuật sau đây, hãy trình bày một kế hoạch chi tiết:\n1.  **Generated Knowledge:** Đầu tiên, hãy viết một đoạn tổng quan về xu hướng hương vị bánh ngọt cho mùa lễ hội năm nay.\n2.  **Tree of Thoughts:** Dựa trên xu hướng đó, hãy phát triển 3 ý tưởng sản phẩm khác nhau. Tự đánh giá và chọn ra 1 ý tưởng tiềm năng nhất.\n3.  **Instruction Prompting & Role Prompting:** Với ý tưởng đã chọn, hãy viết một bản công thức chi tiết, chuyên nghiệp.\n4.  **Output Constraints:** Cuối cùng, tạo một đối tượng JSON tóm tắt các thông số chính của sản phẩm (tên, mô tả ngắn, giá bán dự kiến, chi phí nguyên vật liệu ước tính).\n\nĐây là một dự án quan trọng, hãy thể hiện năng lực tốt nhất của bạn.",
+    "techniqueCategory": "PHẦN 8: KỸ THUẬT MỚI & EXPERIMENTAL",
+    "primaryTechnique": "Mixture-of-Agents",
+    "secondaryTechniques": ["Generated Knowledge Prompting", "Tree of Thoughts", "Role Prompting", "Output Constraints", "EmotionPrompt"],
+    "useCase": "Enterprise workflows",
+    "parameters": [],
+    "notes": "Một ví dụ điển hình về cách kết hợp nhiều kỹ thuật để giải quyết một bài toán kinh doanh phức tạp từ đầu đến cuối."
+  }
+]
