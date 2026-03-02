@@ -1,0 +1,3 @@
+## 2026-03-02 - Eliminate synchronous disk I/O with deep-copying string cache
+**Learning:** Constant disk I/O for `readPrompts()` in `database.js` causes significant bottlenecks in an Express app since it's repeatedly invoked for nearly all REST endpoints (GET, POST, PUT, DELETE). Caching is crucial, but storing a mutable array directly could lead to cache poisoning if modified before saving.
+**Action:** Use an in-memory stringified cache (`cachedPromptsString = JSON.stringify(data)`) and parse it on every read (`JSON.parse(cachedPromptsString)`). This eliminates disk reads, guarantees a deep copy to prevent mutation bugs, and minimizes memory overhead while protecting the integrity of the data stream. Update the cache only after a successful disk write.
