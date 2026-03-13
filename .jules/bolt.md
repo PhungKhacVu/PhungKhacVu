@@ -1,0 +1,3 @@
+## 2024-05-14 - File-Based Database Caching & Security
+**Learning:** Directly reading from a JSON file on every API request creates a massive disk I/O bottleneck. When implementing an in-memory cache for a file database, caching parsed objects can lead to cache poisoning if objects are mutated by reference elsewhere. Storing the cache as a stringified JSON variable (`cachedPromptsString`) and parsing it on read acts as a fast deep copy, preventing accidental mutations while massively reducing disk I/O.
+**Action:** When optimizing file-based reads, implement stringified caching instead of object caching to safely balance speed and data integrity, while ensuring concurrent read races and disk write failures are properly handled to maintain cache consistency.
