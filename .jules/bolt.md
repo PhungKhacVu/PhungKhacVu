@@ -1,0 +1,3 @@
+## 2024-05-18 - Stringified Cache for Disk I/O Bottleneck
+**Learning:** Naive in-memory caching of objects can lead to cache poisoning if consumers mutate the returned object. Returning parsed JSON from a stringified cache variable safely deep-copies it. Additionally, asynchronous reads introduce race conditions where a stale read might overwrite a fresh cache entry.
+**Action:** When implementing in-memory caching for JSON files, store the cache as a string and parse it on every read. Always verify `cache === null` (or equivalent) after the asynchronous read completes but before updating the cache, to ensure newer writes aren't overwritten by slow reads.
