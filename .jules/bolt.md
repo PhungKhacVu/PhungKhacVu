@@ -1,0 +1,3 @@
+## 2024-05-24 - File I/O Bottleneck in Database Reads
+**Learning:** Found a significant performance bottleneck in `database.js` where `fs.readFile` was called synchronously on every API request. This meant constant disk I/O, which is expensive and unnecessary for a mostly read-heavy JSON file. Implementing an in-memory cache using a stringified JSON variable (`cachedPromptsString`) dramatically reduces disk reads while preventing cache poisoning via `JSON.parse` acting as a deep copy.
+**Action:** When working with JSON file-based "databases" or heavy read operations, always implement an in-memory caching layer, ensuring to invalidate safely on error, handle concurrent read races, and update only after successful disk writes.
