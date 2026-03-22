@@ -177,8 +177,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Event Listeners ---
+    // Bolt Optimization: Debounce function to limit the rate of function execution
+    const debounce = (func, delay) => {
+        let timeoutId;
+        return (...args) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func.apply(null, args);
+            }, delay);
+        };
+    };
+
     newPromptBtn.addEventListener('click', () => renderPromptForm());
-    searchInput.addEventListener('input', (e) => renderPromptList(e.target.value));
+
+    // Bolt Optimization: Debounced search input to prevent re-rendering DOM on every keystroke
+    const debouncedRenderPromptList = debounce((value) => renderPromptList(value), 300);
+    searchInput.addEventListener('input', (e) => debouncedRenderPromptList(e.target.value));
 
     exportBtn.addEventListener('click', () => {
         const dataStr = JSON.stringify(allPrompts, null, 2);
