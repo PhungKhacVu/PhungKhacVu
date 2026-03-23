@@ -1,0 +1,3 @@
+## 2024-05-24 - Frontend State Refetching Bottleneck
+**Learning:** Found that `savePrompt` and `deletePrompt` in `public/app.js` trigger a full `fetchPrompts()` (an O(N) network request) to refetch the entire list from the API on every save/delete operation instead of updating the local `allPrompts` array directly. This is a common performance bottleneck in simple single-page apps.
+**Action:** When working on SPAs with an existing state array, ensure CRUD operations update the local state array optimistically or directly with the server response instead of blindly refetching the whole list from the server to avoid unnecessary network latency and overhead.
