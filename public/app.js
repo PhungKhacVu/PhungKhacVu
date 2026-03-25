@@ -176,9 +176,25 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
+    // --- Utilities ---
+    // Debounce function to limit the rate at which a function can fire.
+    // Useful for optimizing performance on frequent events like search input.
+    const debounce = (func, delay) => {
+        let timeoutId;
+        return (...args) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func.apply(null, args);
+            }, delay);
+        };
+    };
+
     // --- Event Listeners ---
     newPromptBtn.addEventListener('click', () => renderPromptForm());
-    searchInput.addEventListener('input', (e) => renderPromptList(e.target.value));
+
+    // Debounce search input to prevent re-rendering list on every keystroke
+    const debouncedSearch = debounce((value) => renderPromptList(value), 300);
+    searchInput.addEventListener('input', (e) => debouncedSearch(e.target.value));
 
     exportBtn.addEventListener('click', () => {
         const dataStr = JSON.stringify(allPrompts, null, 2);
