@@ -1,0 +1,3 @@
+## 2024-05-24 - Frontend Re-render Optimization
+**Learning:** In a single-page application like Prompt Nebula that filters a large list of elements (e.g., `renderPromptList` in `public/app.js`), attaching a filtering function directly to the `input` event listener of a search box causes an entire DOM re-render on every single keystroke. This causes severe main thread blocking during rapid typing when the list is sufficiently large.
+**Action:** Always wrap frequent, UI-blocking event handlers (like search inputs or window resizing) in a `debounce` or `throttle` utility function to delay execution until the rapid events cease, effectively batching updates and significantly improving responsiveness.
