@@ -1,0 +1,3 @@
+## 2024-05-24 - [Avoid disk I/O on every API call]
+**Learning:** The database module performs an async `fs.readFile` and `JSON.parse` for every `readPrompts()` call. This blocks the Express route and significantly degrades API performance under load.
+**Action:** Implement an in-memory variable (cache) that stores the parsed JSON and update the cache variable during `writePrompts()` to avoid unnecessary disk reads.
