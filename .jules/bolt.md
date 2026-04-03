@@ -1,0 +1,3 @@
+## 2024-04-03 - N+1 Fetching Bottleneck in Bulk Operations
+**Learning:** In a single-page application, calling a full list refetch (like `fetchPrompts()`) after every `save` or `delete` operation works fine for individual user interactions, but creates a massive N+1 network bottleneck during bulk operations (like the file import feature, which loops over `savePrompt`).
+**Action:** Always prefer optimistic UI updates (mutating local state directly) instead of refetching the entire dataset after atomic updates to avoid accidental N+1 storms.
