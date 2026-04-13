@@ -1,0 +1,3 @@
+## 2026-04-13 - [N+1 Bottleneck in savePrompt]
+**Learning:** `savePrompt` calls `fetchPrompts` after modifying a prompt, refetching the entire list of prompts. When importing multiple prompts, this results in an N+1 bottleneck where each saved prompt triggers a complete refetch.
+**Action:** Use optimistic UI updates in actions like `savePrompt` and `deletePrompt` instead of refetching the complete list of items over the network. Update the local client state directly.
