@@ -1,0 +1,3 @@
+## 2024-05-24 - Optimistic Updates to Avoid N+1 API Calls
+**Learning:** Calling a full data refetch like `fetchPrompts()` inside a function that might be called in a loop (like `savePrompt` during bulk imports) creates an N+1 API request bottleneck and causes excessive DOM re-renders.
+**Action:** Use optimistic UI updates to modify local state directly (e.g., updating the `allPrompts` array) and re-rendering the specific UI component (`renderPromptList()`) instead of relying on a full API refetch after every single modification.

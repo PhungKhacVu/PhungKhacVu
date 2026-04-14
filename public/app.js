@@ -39,8 +39,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(promptData),
             });
             if (!response.ok) throw new Error('Failed to save prompt');
-            await fetchPrompts(); // Refresh the list
+
             const savedPrompt = await response.json();
+
+            // Optimistic update to avoid N+1 fetches during bulk operations
+            if (isUpdating) {
+                const index = allPrompts.findIndex(p => p.id === savedPrompt.id);
+                if (index !== -1) allPrompts[index] = savedPrompt;
+            } else {
+                allPrompts.push(savedPrompt);
+            }
+            renderPromptList(searchInput.value);
+
             currentPromptId = savedPrompt.id;
             renderPromptView(savedPrompt); // View the newly saved/created prompt
         } catch (error) {
@@ -54,7 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Failed to delete prompt');
-            await fetchPrompts();
+
+            // Optimistic update to avoid full refetch
+            allPrompts = allPrompts.filter(p => p.id !== id);
+            renderPromptList(searchInput.value);
+
             renderWelcomeScreen();
         } catch (error) {
             console.error(error);
