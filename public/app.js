@@ -39,8 +39,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(promptData),
             });
             if (!response.ok) throw new Error('Failed to save prompt');
-            await fetchPrompts(); // Refresh the list
             const savedPrompt = await response.json();
+
+            // ⚡ Bolt: Performance Optimization
+            // Replaced `await fetchPrompts()` with local state updates.
+            // Impact: Reduces O(N) redundant network requests during bulk imports to 0 per save.
+            if (isUpdating) {
+                allPrompts = allPrompts.map(p => p.id === savedPrompt.id ? savedPrompt : p);
+            } else {
+                allPrompts.push(savedPrompt);
+            }
+            renderPromptList(searchInput.value); // Re-render from local state
             currentPromptId = savedPrompt.id;
             renderPromptView(savedPrompt); // View the newly saved/created prompt
         } catch (error) {
@@ -54,7 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Failed to delete prompt');
-            await fetchPrompts();
+
+            // ⚡ Bolt: Performance Optimization
+            // Replaced `await fetchPrompts()` with local state updates.
+            // Impact: Saves an unnecessary network roundtrip after every deletion.
+            allPrompts = allPrompts.filter(p => p.id !== id);
+            renderPromptList(searchInput.value);
             renderWelcomeScreen();
         } catch (error) {
             console.error(error);
