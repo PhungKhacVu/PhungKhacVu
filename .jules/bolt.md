@@ -1,0 +1,3 @@
+## 2024-05-18 - Optimistic UI Updates Over Full Refetches
+**Learning:** In a single-page application doing simple CRUD, triggering a full data refetch (like `await fetchPrompts()`) after every save or delete operation creates significant bottlenecks. This is especially true when operations happen in bulk, such as the `savePrompt` loop during importing data. It results in N+1 HTTP requests.
+**Action:** Always prefer updating the local state optimistically instead of refetching the entire dataset if the client possesses the full update payload. For instance, update the list manually by modifying the array (`allPrompts.push()`, `.filter()`, etc.) and triggering re-render functions immediately.
