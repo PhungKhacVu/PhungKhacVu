@@ -1,0 +1,3 @@
+## 2026-04-22 - [Avoid N+1 HTTP Requests During Bulk Import]
+**Learning:** The frontend's `import` feature iterates over `savePrompt` concurrently using `Promise.all`. Because `savePrompt` originally triggered a full `fetchPrompts()` refresh after every save, it created a massive N+1 HTTP request bottleneck that stalled the application during bulk imports.
+**Action:** Always prefer optimistic UI updates for local state (like updating the `allPrompts` array directly) rather than re-fetching the entire dataset after CRUD operations. Ensure local state changes manually trigger UI re-renders using `renderPromptList(searchInput.value)`.
