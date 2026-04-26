@@ -1,0 +1,3 @@
+## 2024-04-26 - Bulk Operations and N+1 Request Bottleneck
+**Learning:** In frontend applications that perform bulk operations (like importing multiple items), triggering a full data refetch (e.g., `fetchPrompts()`) inside the save loop or relying on individual save functions that refetch can cause massive N+1 HTTP request bottlenecks.
+**Action:** When implementing save or update operations that might be called in bulk, prioritize local state updates to immediately reflect changes without refetching from the server. Ensure any bulk operation wrapper omits or carefully manages full refetches to maintain performance.
