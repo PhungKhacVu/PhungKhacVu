@@ -29,6 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const savePrompt = async (promptData) => {
         const isUpdating = !!promptData.id;
+        if (!isUpdating) {
+            delete promptData.id; // Prevent empty string from overriding server ID
+        }
         const url = isUpdating ? `${API_URL}/${promptData.id}` : API_URL;
         const method = isUpdating ? 'PUT' : 'POST';
 
@@ -39,9 +42,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(promptData),
             });
             if (!response.ok) throw new Error('Failed to save prompt');
-            await fetchPrompts(); // Refresh the list
+
             const savedPrompt = await response.json();
+
+            // Local state update: Avoid full list refetch to improve performance
+            if (isUpdating) {
+                const index = allPrompts.findIndex(p => p.id === savedPrompt.id);
+                if (index !== -1) allPrompts[index] = savedPrompt;
+            } else {
+                allPrompts.push(savedPrompt);
+            }
+
             currentPromptId = savedPrompt.id;
+            renderPromptList(searchInput.value); // Re-render list manually
             renderPromptView(savedPrompt); // View the newly saved/created prompt
         } catch (error) {
             console.error(error);
@@ -54,7 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Failed to delete prompt');
-            await fetchPrompts();
+
+            // Local state update: Avoid full list refetch to improve performance
+            allPrompts = allPrompts.filter(p => p.id !== id);
+
+            renderPromptList(searchInput.value); // Re-render list manually to remove deleted item
             renderWelcomeScreen();
         } catch (error) {
             console.error(error);
@@ -178,7 +195,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners ---
     newPromptBtn.addEventListener('click', () => renderPromptForm());
-    searchInput.addEventListener('input', (e) => renderPromptList(e.target.value));
+
+    // Debounce search to prevent excessive renders
+    let searchTimeout;
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            renderPromptList(e.target.value);
+        }, 300);
+    });
 
     exportBtn.addEventListener('click', () => {
         const dataStr = JSON.stringify(allPrompts, null, 2);
