@@ -1,0 +1,3 @@
+## 2024-05-24 - [Avoid N+1 Fetch Requests During Bulk Operations]
+**Learning:** In public/app.js, the bulk import feature iterated over savePrompt. Previously, savePrompt made an await fetchPrompts() call to the server after every single creation. This led to a massive N+1 HTTP request bottleneck, effectively halting performance during bulk imports.
+**Action:** When a UI requires frequent data mutations (like bulk inserts or updates), replace full-data refetches (like fetchPrompts()) with precise, local state updates on the frontend (e.g., updating the allPrompts array directly) to avoid unnecessary network latency and main thread blocking. Make sure to call a corresponding UI render function explicitly afterwards.
