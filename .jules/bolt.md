@@ -1,0 +1,3 @@
+## 2024-05-14 - Fix N+1 Request Bottleneck during Bulk Imports
+**Learning:** In a single-page application doing bulk operations sequentially on the frontend (like the import functionality here iterating through all items and saving them), refreshing the entire list (`await fetchPrompts()`) after every single item is saved creates a massive N+1 HTTP request bottleneck, slowing down bulk operations severely and wasting network/server resources.
+**Action:** Replace full list network refetches with optimistic or local state updates after successful individual save operations, allowing bulk processing to only rely on individual post requests, completely eliminating the N refetches.

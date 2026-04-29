@@ -29,6 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const savePrompt = async (promptData) => {
         const isUpdating = !!promptData.id;
+        if (!promptData.id) {
+            delete promptData.id;
+        }
         const url = isUpdating ? `${API_URL}/${promptData.id}` : API_URL;
         const method = isUpdating ? 'PUT' : 'POST';
 
@@ -39,9 +42,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(promptData),
             });
             if (!response.ok) throw new Error('Failed to save prompt');
-            await fetchPrompts(); // Refresh the list
+
             const savedPrompt = await response.json();
             currentPromptId = savedPrompt.id;
+
+            // Local state update
+            if (isUpdating) {
+                const index = allPrompts.findIndex(p => p.id === savedPrompt.id);
+                if (index !== -1) {
+                    allPrompts[index] = savedPrompt;
+                }
+            } else {
+                allPrompts.push(savedPrompt);
+            }
+            renderPromptList(searchInput.value); // Update UI without network request
+
             renderPromptView(savedPrompt); // View the newly saved/created prompt
         } catch (error) {
             console.error(error);
@@ -54,7 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Failed to delete prompt');
-            await fetchPrompts();
+
+            // Local state update
+            allPrompts = allPrompts.filter(p => p.id !== id);
             renderWelcomeScreen();
         } catch (error) {
             console.error(error);
@@ -102,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>Select a prompt from the list or create a new one to get started.</p>
             </div>
         `;
-        renderPromptList();
+        renderPromptList(searchInput.value);
     };
 
     const renderPromptView = (prompt) => {
@@ -176,9 +193,20 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
+    // --- Utils ---
+    const debounce = (func, delay) => {
+        let timeoutId;
+        return (...args) => {
+            if (timeoutId) clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func.apply(null, args);
+            }, delay);
+        };
+    };
+
     // --- Event Listeners ---
     newPromptBtn.addEventListener('click', () => renderPromptForm());
-    searchInput.addEventListener('input', (e) => renderPromptList(e.target.value));
+    searchInput.addEventListener('input', debounce((e) => renderPromptList(e.target.value), 300));
 
     exportBtn.addEventListener('click', () => {
         const dataStr = JSON.stringify(allPrompts, null, 2);
