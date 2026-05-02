@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- State ---
     let allPrompts = [];
     let currentPromptId = null;
+    let debounceTimeout = null;
 
     // --- API Functions ---
     const API_URL = '/api/prompts';
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const savePrompt = async (promptData) => {
+        if (promptData.id === '') delete promptData.id;
         const isUpdating = !!promptData.id;
         const url = isUpdating ? `${API_URL}/${promptData.id}` : API_URL;
         const method = isUpdating ? 'PUT' : 'POST';
@@ -39,8 +41,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(promptData),
             });
             if (!response.ok) throw new Error('Failed to save prompt');
-            await fetchPrompts(); // Refresh the list
+
             const savedPrompt = await response.json();
+
+            // Local state update
+            if (isUpdating) {
+                const index = allPrompts.findIndex(p => p.id === savedPrompt.id);
+                if (index !== -1) allPrompts[index] = savedPrompt;
+            } else {
+                allPrompts.push(savedPrompt);
+            }
+
+            renderPromptList(searchInput.value);
+
             currentPromptId = savedPrompt.id;
             renderPromptView(savedPrompt); // View the newly saved/created prompt
         } catch (error) {
@@ -54,7 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Failed to delete prompt');
-            await fetchPrompts();
+
+            // Local state update
+            allPrompts = allPrompts.filter(p => p.id !== id);
+
             renderWelcomeScreen();
         } catch (error) {
             console.error(error);
@@ -102,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>Select a prompt from the list or create a new one to get started.</p>
             </div>
         `;
-        renderPromptList();
+        renderPromptList(searchInput.value);
     };
 
     const renderPromptView = (prompt) => {
@@ -178,7 +194,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners ---
     newPromptBtn.addEventListener('click', () => renderPromptForm());
-    searchInput.addEventListener('input', (e) => renderPromptList(e.target.value));
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => renderPromptList(e.target.value), 300);
+    });
 
     exportBtn.addEventListener('click', () => {
         const dataStr = JSON.stringify(allPrompts, null, 2);
