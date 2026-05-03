@@ -1,0 +1,3 @@
+## 2024-05-18 - [Optimize File Import N+1 Fetch Bottleneck]
+**Learning:** During the file import operation, mapping over prompts and calling `savePrompt` sequentially triggered an N+1 HTTP request bottleneck, because `savePrompt` awaited `fetchPrompts()` after every save. This resulted in significant main-thread and network blocking for bulk imports.
+**Action:** Replace `await fetchPrompts()` inside `savePrompt` and `deletePrompt` with a local state update on the `allPrompts` array, updating the UI accordingly. Add a parameter `skipRender` to `savePrompt` to avoid rendering individual items during bulk import, allowing a single `renderPromptList` after the loop.
