@@ -1,0 +1,3 @@
+## 2024-05-07 - Avoid N+1 DOM Updates and Network Requests on Bulk Import
+**Learning:** During bulk operations like importing many prompts from a file, triggering an API call and waiting for a full `fetchPrompts()` on every iteration creates a massive N+1 bottleneck, slowing down the frontend significantly and blocking the main thread with redundant re-renders.
+**Action:** When performing mutations in a loop, rely on local state updates to maintain UI state without refetching from the server. Batch DOM updates by skipping individual renders per item and re-rendering the UI only once after the entire loop concludes.
