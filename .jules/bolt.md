@@ -1,0 +1,3 @@
+## 2024-11-20 - [Frontend Re-render Optimization & Local State Mgt]
+**Learning:** The frontend makes full HTTP requests via `fetchPrompts()` on every prompt save and delete, which blocks subsequent re-renders and degrades performance—especially evident during bulk file imports.
+**Action:** When executing saving or deletion in the frontend, replace the full `fetchPrompts()` with a local state update to the `allPrompts` array to immediately reflect changes while avoiding unnecessary HTTP refetches. Batch UI updates during bulk actions by omitting intermediate re-renders. Add debounce to search inputs to limit main-thread blocking synchronous UI updates.
