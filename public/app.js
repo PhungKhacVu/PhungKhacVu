@@ -12,6 +12,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let allPrompts = [];
     let currentPromptId = null;
 
+    // --- Utility Functions ---
+    const debounce = (func, wait) => {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    };
+
     // --- API Functions ---
     const API_URL = '/api/prompts';
 
@@ -27,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const savePrompt = async (promptData) => {
+    const savePrompt = async (promptData, skipRender = false) => {
         const isUpdating = !!promptData.id;
         const url = isUpdating ? `${API_URL}/${promptData.id}` : API_URL;
         const method = isUpdating ? 'PUT' : 'POST';
@@ -39,10 +52,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(promptData),
             });
             if (!response.ok) throw new Error('Failed to save prompt');
-            await fetchPrompts(); // Refresh the list
+
             const savedPrompt = await response.json();
+
+            // Local state update
+            if (isUpdating) {
+                const index = allPrompts.findIndex(p => p.id === savedPrompt.id);
+                if (index !== -1) allPrompts[index] = savedPrompt;
+            } else {
+                allPrompts.push(savedPrompt);
+            }
+
             currentPromptId = savedPrompt.id;
-            renderPromptView(savedPrompt); // View the newly saved/created prompt
+
+            if (!skipRender) {
+                renderPromptList(searchInput.value);
+                renderPromptView(savedPrompt); // View the newly saved/created prompt
+            }
         } catch (error) {
             console.error(error);
         }
@@ -54,7 +80,11 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Failed to delete prompt');
-            await fetchPrompts();
+
+            // Local state update
+            allPrompts = allPrompts.filter(p => p.id !== id);
+
+            renderPromptList(searchInput.value); // Re-render the list immediately
             renderWelcomeScreen();
         } catch (error) {
             console.error(error);
@@ -161,6 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
+            if (!data.id) delete data.id; // Prevent empty string from overriding server-generated ID
             savePrompt(data);
         });
 
@@ -178,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners ---
     newPromptBtn.addEventListener('click', () => renderPromptForm());
-    searchInput.addEventListener('input', (e) => renderPromptList(e.target.value));
+    searchInput.addEventListener('input', debounce((e) => renderPromptList(e.target.value), 300));
 
     exportBtn.addEventListener('click', () => {
         const dataStr = JSON.stringify(allPrompts, null, 2);
@@ -204,9 +235,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const importedPrompts = JSON.parse(event.target.result);
                 // Simple import: just replace everything. A more robust implementation might merge.
                 // We'll call our backend to write the new data.
-                const savePromises = importedPrompts.map(p => savePrompt(p));
+                const savePromises = importedPrompts.map(p => savePrompt(p, true));
                 await Promise.all(savePromises);
-                await fetchPrompts(); // Refresh to get the final state
+
+                renderPromptList(searchInput.value);
                 renderWelcomeScreen();
             } catch (err) {
                 alert('Error importing file. Make sure it is a valid JSON file.');
