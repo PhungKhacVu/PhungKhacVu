@@ -1,0 +1,3 @@
+## 2024-05-13 - Local State Updates to Avoid N+1 Refetches
+**Learning:** Calling a full data refetch function like `fetchPrompts()` after each update (save or delete) causes an N+1 API bottleneck, especially during bulk operations like file imports that loop over the save function. This also triggers unnecessary synchronous DOM rendering.
+**Action:** Always prefer local state array modifications (e.g. `allPrompts.push()` or `allPrompts.filter()`) following a successful HTTP response to update the UI without extra HTTP requests. Use a `skipRender` parameter to batch UI rendering for bulk operations.
