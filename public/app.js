@@ -27,7 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const savePrompt = async (promptData) => {
+    const savePrompt = async (promptData, skipRender = false) => {
+        if (promptData.id === '') delete promptData.id;
         const isUpdating = !!promptData.id;
         const url = isUpdating ? `${API_URL}/${promptData.id}` : API_URL;
         const method = isUpdating ? 'PUT' : 'POST';
@@ -39,10 +40,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(promptData),
             });
             if (!response.ok) throw new Error('Failed to save prompt');
-            await fetchPrompts(); // Refresh the list
             const savedPrompt = await response.json();
-            currentPromptId = savedPrompt.id;
-            renderPromptView(savedPrompt); // View the newly saved/created prompt
+
+            // Local state update
+            if (isUpdating) {
+                const index = allPrompts.findIndex(p => p.id === savedPrompt.id);
+                if (index !== -1) allPrompts[index] = savedPrompt;
+            } else {
+                allPrompts.push(savedPrompt);
+            }
+
+            if (!skipRender) {
+                currentPromptId = savedPrompt.id;
+                renderPromptList(searchInput.value);
+                renderPromptView(savedPrompt); // View the newly saved/created prompt
+            }
         } catch (error) {
             console.error(error);
         }
@@ -54,7 +66,9 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Failed to delete prompt');
-            await fetchPrompts();
+            // Local state update
+            allPrompts = allPrompts.filter(p => p.id !== id);
+            renderPromptList(searchInput.value);
             renderWelcomeScreen();
         } catch (error) {
             console.error(error);
@@ -204,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const importedPrompts = JSON.parse(event.target.result);
                 // Simple import: just replace everything. A more robust implementation might merge.
                 // We'll call our backend to write the new data.
-                const savePromises = importedPrompts.map(p => savePrompt(p));
+                const savePromises = importedPrompts.map(p => savePrompt(p, true)); // skipRender = true
                 await Promise.all(savePromises);
                 await fetchPrompts(); // Refresh to get the final state
                 renderWelcomeScreen();
