@@ -1,0 +1,3 @@
+## 2024-05-15 - Prevent N+1 Refetching on DOM Mutation Operations
+**Learning:** Using `await fetchPrompts()` on every `savePrompt` or `deletePrompt` call forces a massive N+1 HTTP request bottleneck, particularly painful during bulk imports where `savePrompt` is iterated over. Since we know the mutation outcome in the response payload, refetching everything is redundant.
+**Action:** Always prefer local state updates (e.g. updating a local `allPrompts` array) on successful mutation responses. Only trigger a single manual UI re-render (batching DOM updates with a `skipRender` parameter for loops) rather than allowing full backend refetches for data already known.
