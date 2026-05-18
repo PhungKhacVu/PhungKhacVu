@@ -1,0 +1,3 @@
+## 2024-05-18 - [Optimized Local State vs Fetch Refetches]
+**Learning:** During bulk file imports, iterating over `savePrompt` triggers an N+1 HTTP request bottleneck because the codebase previously fetched `allPrompts` using `fetchPrompts` after every creation/update operation. This is especially problematic due to lack of debouncing and excessive main-thread work rendering lists multiple times.
+**Action:** When mutations occur on list items, update local state variables (`allPrompts`) instead of blindly refetching data from the server. Ensure that logic explicitly prevents immediate re-renders during bulk actions (e.g. `skipRender` param) to batch updates.
