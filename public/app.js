@@ -27,10 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const savePrompt = async (promptData) => {
+    const savePrompt = async (promptData, skipRender = false) => {
         const isUpdating = !!promptData.id;
         const url = isUpdating ? `${API_URL}/${promptData.id}` : API_URL;
         const method = isUpdating ? 'PUT' : 'POST';
+
+        if (!promptData.id) delete promptData.id;
 
         try {
             const response = await fetch(url, {
@@ -39,10 +41,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(promptData),
             });
             if (!response.ok) throw new Error('Failed to save prompt');
-            await fetchPrompts(); // Refresh the list
+
+            // ⚡ Bolt Optimization: Local state update
+            // Why: Avoids full fetchPrompts() N+1 HTTP bottleneck on individual saves and bulk imports.
+            // Impact: Reduces HTTP requests and unnecessary UI re-renders during bulk operations.
+            // Measurement: Network tab should show no GET requests after a save/import.
             const savedPrompt = await response.json();
-            currentPromptId = savedPrompt.id;
-            renderPromptView(savedPrompt); // View the newly saved/created prompt
+
+            const existingIndex = allPrompts.findIndex(p => p.id === savedPrompt.id);
+            if (existingIndex > -1) {
+                allPrompts[existingIndex] = savedPrompt;
+            } else {
+                allPrompts.push(savedPrompt);
+            }
+
+            if (!skipRender) {
+                currentPromptId = savedPrompt.id;
+                renderPromptList(searchInput.value);
+                renderPromptView(savedPrompt);
+            }
         } catch (error) {
             console.error(error);
         }
@@ -54,8 +71,20 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Failed to delete prompt');
-            await fetchPrompts();
-            renderWelcomeScreen();
+
+            // ⚡ Bolt Optimization: Local state update
+            // Why: Avoids full fetchPrompts() N+1 HTTP bottleneck on deletion.
+            // Impact: Reduces HTTP requests and increases perceived speed.
+            // Measurement: Network tab should show no GET requests after delete.
+            allPrompts = allPrompts.filter(p => p.id !== id);
+            currentPromptId = null;
+            mainContent.innerHTML = `
+                <div class="welcome-screen">
+                    <h2>Welcome to Prompt Nebula</h2>
+                    <p>Select a prompt from the list or create a new one to get started.</p>
+                </div>
+            `;
+            renderPromptList(searchInput.value);
         } catch (error) {
             console.error(error);
         }
@@ -102,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>Select a prompt from the list or create a new one to get started.</p>
             </div>
         `;
-        renderPromptList();
+        renderPromptList(searchInput.value);
     };
 
     const renderPromptView = (prompt) => {
@@ -204,9 +233,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const importedPrompts = JSON.parse(event.target.result);
                 // Simple import: just replace everything. A more robust implementation might merge.
                 // We'll call our backend to write the new data.
-                const savePromises = importedPrompts.map(p => savePrompt(p));
+
+                // ⚡ Bolt Optimization: Batch updates
+                // Why: We use skipRender=true to avoid rendering N times during a bulk import.
+                // Impact: Stops the browser from freezing on large file imports.
+                // Measurement: Performance timeline should show single DOM update after import.
+                const savePromises = importedPrompts.map(p => savePrompt(p, true));
                 await Promise.all(savePromises);
-                await fetchPrompts(); // Refresh to get the final state
+
                 renderWelcomeScreen();
             } catch (err) {
                 alert('Error importing file. Make sure it is a valid JSON file.');
