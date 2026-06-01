@@ -1,0 +1,3 @@
+## 2024-05-24 - Avoid N+1 Refetches and DOM Thrashing During Bulk Import
+**Learning:** In a vanilla JS SPA that maps over an array of imported objects and fires individual API calls (e.g., `savePrompt`), calling full array refetches (`fetchPrompts`) or triggering individual DOM re-renders (`renderPromptList`/`renderPromptView`) per item creates massive network bottlenecks and O(N) DOM thrashing, freezing the browser.
+**Action:** Implemented a `skipRender` parameter in individual API handler functions. Updated internal application state locally with upserts instead of refetching from the network, and deferred the final DOM re-render until the entire bulk operation (`Promise.all`) completes.
