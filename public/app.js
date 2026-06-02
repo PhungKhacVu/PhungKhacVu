@@ -87,7 +87,17 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             item.addEventListener('click', () => {
                 currentPromptId = prompt.id;
-                renderPromptList(searchInput.value); // Re-render to update active state
+
+                // ⚡ Bolt Optimization: Update active class directly
+                // Why: Calling renderPromptList recreates the entire DOM list just to update one class.
+                // Impact: Eliminates O(N) DOM recreation on selection change, preventing layout thrashing.
+                // Measurement: Chrome DevTools Performance tab shows reduced scripting/layout time on click.
+                const currentActive = promptListNav.querySelector('.prompt-item.active');
+                if (currentActive) {
+                    currentActive.classList.remove('active');
+                }
+                item.classList.add('active');
+
                 renderPromptView(prompt);
             });
             promptListNav.appendChild(item);
