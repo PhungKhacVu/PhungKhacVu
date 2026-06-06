@@ -176,9 +176,27 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
+    // ⚡ Bolt Optimization: Debounce search input
+    // Why: Prevent excessive synchronous DOM re-renders while typing.
+    // Impact: Avoids O(N) DOM manipulations on every keystroke, improving input responsiveness.
+    // Measurement: Monitor timeline during typing; check renderPromptList call frequency.
+    const debounce = (func, delay) => {
+        let timeoutId;
+        return (...args) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func.apply(null, args);
+            }, delay);
+        };
+    };
+
+    const debouncedRenderPromptList = debounce((value) => {
+        renderPromptList(value);
+    }, 300);
+
     // --- Event Listeners ---
     newPromptBtn.addEventListener('click', () => renderPromptForm());
-    searchInput.addEventListener('input', (e) => renderPromptList(e.target.value));
+    searchInput.addEventListener('input', (e) => debouncedRenderPromptList(e.target.value));
 
     exportBtn.addEventListener('click', () => {
         const dataStr = JSON.stringify(allPrompts, null, 2);
