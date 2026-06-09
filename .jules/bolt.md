@@ -1,0 +1,3 @@
+## 2024-05-18 - N+1 Request Bottleneck during Bulk Imports
+**Learning:** During bulk operations like importing files, calling `fetchPrompts()` (which makes a network request) after every single `savePrompt` call leads to an N+1 HTTP request bottleneck, significantly slowing down the application and potentially overloading the server.
+**Action:** When performing bulk creations or updates, use optimistic local state updates to modify the in-memory array (`allPrompts`) directly instead of re-fetching the entire dataset from the server on every iteration. Use a `skipRender` parameter to batch DOM re-renders until all bulk operations are complete.

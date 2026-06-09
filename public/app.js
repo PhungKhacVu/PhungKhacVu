@@ -20,15 +20,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(API_URL);
             if (!response.ok) throw new Error('Failed to fetch prompts');
             allPrompts = await response.json();
-            renderPromptList();
+            renderPromptList(searchInput?.value || ''); // Preserve active search filter
         } catch (error) {
             console.error(error);
             mainContent.innerHTML = `<div class="error">Failed to load prompts. Is the server running?</div>`;
         }
     };
 
-    const savePrompt = async (promptData) => {
+    const savePrompt = async (promptData, skipRender = false) => {
         const isUpdating = !!promptData.id;
+        if (!isUpdating) delete promptData.id; // Prevent empty string ID overwrite
         const url = isUpdating ? `${API_URL}/${promptData.id}` : API_URL;
         const method = isUpdating ? 'PUT' : 'POST';
 
@@ -39,10 +40,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(promptData),
             });
             if (!response.ok) throw new Error('Failed to save prompt');
-            await fetchPrompts(); // Refresh the list
             const savedPrompt = await response.json();
-            currentPromptId = savedPrompt.id;
-            renderPromptView(savedPrompt); // View the newly saved/created prompt
+
+            // ⚡ Bolt Optimization: Local state update
+            // Why: Prevents N+1 HTTP request bottlenecks during bulk operations (like imports)
+            // Impact: Eliminates full data refetches on every save, significantly improving performance
+            // Measurement: Network tab should show only one request per save, no subsequent GET requests
+            const index = allPrompts.findIndex(p => p.id === savedPrompt.id);
+            if (index !== -1) {
+                allPrompts[index] = savedPrompt;
+            } else {
+                allPrompts.push(savedPrompt);
+            }
+
+            if (!skipRender) {
+                currentPromptId = savedPrompt.id;
+                renderPromptList(searchInput?.value || ''); // Preserve search filter
+                renderPromptView(savedPrompt); // View the newly saved/created prompt
+            }
         } catch (error) {
             console.error(error);
         }
@@ -54,7 +69,13 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Failed to delete prompt');
-            await fetchPrompts();
+
+            // ⚡ Bolt Optimization: Local state update
+            // Why: Prevents unnecessary full data refetches on deletion
+            // Impact: Eliminates GET requests after DELETE, improving UI responsiveness
+            // Measurement: Network tab should show only DELETE request, no subsequent GET
+            allPrompts = allPrompts.filter(p => p.id !== id);
+
             renderWelcomeScreen();
         } catch (error) {
             console.error(error);
@@ -102,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>Select a prompt from the list or create a new one to get started.</p>
             </div>
         `;
-        renderPromptList();
+        renderPromptList(searchInput?.value || ''); // Preserve active search filter
     };
 
     const renderPromptView = (prompt) => {
@@ -204,9 +225,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const importedPrompts = JSON.parse(event.target.result);
                 // Simple import: just replace everything. A more robust implementation might merge.
                 // We'll call our backend to write the new data.
-                const savePromises = importedPrompts.map(p => savePrompt(p));
+                const savePromises = importedPrompts.map(p => savePrompt(p, true)); // skipRender = true
                 await Promise.all(savePromises);
-                await fetchPrompts(); // Refresh to get the final state
+
+                // ⚡ Bolt Optimization: Batch DOM re-render
+                // Why: We avoided rendering during the bulk save to prevent layout thrashing
+                // Impact: Only one full list render happens after the entire import completes
+                renderPromptList(searchInput?.value || '');
                 renderWelcomeScreen();
             } catch (err) {
                 alert('Error importing file. Make sure it is a valid JSON file.');
