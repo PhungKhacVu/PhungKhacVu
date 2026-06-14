@@ -1,0 +1,3 @@
+## 2024-03-24 - Avoid N+1 requests during bulk imports
+**Learning:** During bulk operations like file imports, triggering a full data refetch (e.g. `fetchPrompts()`) after every single item save creates massive N+1 HTTP request bottlenecks. Relying entirely on full refetches for UI consistency hurts frontend performance and scalability.
+**Action:** Always prefer updating local state arrays directly (`allPrompts`) after successful mutation HTTP responses. Only use full refetches for initial loads or explicit sync requests. Use `skipRender` flags when updating multiple items locally to batch DOM updates efficiently.
