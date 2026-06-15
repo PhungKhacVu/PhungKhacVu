@@ -1,0 +1,3 @@
+## 2026-06-15 - Prevent unnecessary refetches and re-renders on mutation
+**Learning:** In a vanilla JS SPA, calling a full network refetch (e.g., `fetchPrompts()`) after every mutation (`savePrompt`, `deletePrompt`) or bulk import creates significant network overhead and N+1 bottlenecks. Similarly, fully re-rendering large DOM lists on selection changes causes O(N) layout thrashing.
+**Action:** Use optimistic or local state updates: modify the local data array (e.g., `allPrompts`) and selectively update the DOM (e.g., toggling `.active` classes) or trigger a targeted re-render. For bulk operations, batch DOM updates by introducing a `skipRender` flag.
