@@ -27,7 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const savePrompt = async (promptData) => {
+    const savePrompt = async (promptData, skipRender = false) => {
+        if (!promptData.id) delete promptData.id; // Ensure server generates id for new items
         const isUpdating = !!promptData.id;
         const url = isUpdating ? `${API_URL}/${promptData.id}` : API_URL;
         const method = isUpdating ? 'PUT' : 'POST';
@@ -39,10 +40,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(promptData),
             });
             if (!response.ok) throw new Error('Failed to save prompt');
-            await fetchPrompts(); // Refresh the list
+
             const savedPrompt = await response.json();
+
+            // ⚡ Bolt Optimization: Replace full refetch with local state upsert to avoid N+1 requests during bulk operations.
+            const index = allPrompts.findIndex(p => p.id === savedPrompt.id);
+            if (index !== -1) {
+                allPrompts[index] = savedPrompt;
+            } else {
+                allPrompts.push(savedPrompt);
+            }
+
             currentPromptId = savedPrompt.id;
-            renderPromptView(savedPrompt); // View the newly saved/created prompt
+            if (!skipRender) {
+                renderPromptList(searchInput.value);
+                renderPromptView(savedPrompt); // View the newly saved/created prompt
+            }
         } catch (error) {
             console.error(error);
         }
@@ -54,7 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Failed to delete prompt');
-            await fetchPrompts();
+
+            // ⚡ Bolt Optimization: Update local state directly instead of full data refetch.
+            allPrompts = allPrompts.filter(p => p.id !== id);
+
             renderWelcomeScreen();
         } catch (error) {
             console.error(error);
@@ -87,7 +103,10 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             item.addEventListener('click', () => {
                 currentPromptId = prompt.id;
-                renderPromptList(searchInput.value); // Re-render to update active state
+                // ⚡ Bolt Optimization: Directly update .active class to prevent O(N) layout thrashing caused by full DOM recreation.
+                const currentActive = promptListNav.querySelector('.active');
+                if (currentActive) currentActive.classList.remove('active');
+                item.classList.add('active');
                 renderPromptView(prompt);
             });
             promptListNav.appendChild(item);
@@ -102,7 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>Select a prompt from the list or create a new one to get started.</p>
             </div>
         `;
-        renderPromptList();
+        // ⚡ Bolt Optimization: Preserve search filter during view transitions without refetching.
+        renderPromptList(searchInput.value);
     };
 
     const renderPromptView = (prompt) => {
@@ -204,9 +224,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const importedPrompts = JSON.parse(event.target.result);
                 // Simple import: just replace everything. A more robust implementation might merge.
                 // We'll call our backend to write the new data.
-                const savePromises = importedPrompts.map(p => savePrompt(p));
+                // ⚡ Bolt Optimization: Use skipRender flag and local state upserts to avoid massive request bottleneck.
+                const savePromises = importedPrompts.map(p => savePrompt(p, true));
                 await Promise.all(savePromises);
-                await fetchPrompts(); // Refresh to get the final state
+
                 renderWelcomeScreen();
             } catch (err) {
                 alert('Error importing file. Make sure it is a valid JSON file.');
