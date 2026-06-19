@@ -27,8 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const savePrompt = async (promptData) => {
+    const savePrompt = async (promptData, skipRender = false) => {
         const isUpdating = !!promptData.id;
+        // Fix ID payload bug for new prompts
+        if (!isUpdating) {
+            delete promptData.id;
+        }
         const url = isUpdating ? `${API_URL}/${promptData.id}` : API_URL;
         const method = isUpdating ? 'PUT' : 'POST';
 
@@ -39,10 +43,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(promptData),
             });
             if (!response.ok) throw new Error('Failed to save prompt');
-            await fetchPrompts(); // Refresh the list
+
+            // ⚡ Bolt Optimization: Replace full refetch with local state update
+            // Why: Avoids N+1 HTTP request bottleneck during bulk save/imports
+            // Impact: Removes network latency for UI updates on saves
+            // Measurement: Verify POST requests complete without triggering GET requests
             const savedPrompt = await response.json();
-            currentPromptId = savedPrompt.id;
-            renderPromptView(savedPrompt); // View the newly saved/created prompt
+
+            const existingIndex = allPrompts.findIndex(p => p.id === savedPrompt.id);
+            if (existingIndex !== -1) {
+                allPrompts[existingIndex] = savedPrompt;
+            } else {
+                allPrompts.push(savedPrompt);
+            }
+
+            if (!skipRender) {
+                currentPromptId = savedPrompt.id;
+                renderPromptList(searchInput.value);
+                renderPromptView(savedPrompt); // View the newly saved/created prompt
+            }
         } catch (error) {
             console.error(error);
         }
@@ -54,7 +73,13 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Failed to delete prompt');
-            await fetchPrompts();
+
+            // ⚡ Bolt Optimization: Replace full refetch with local state update
+            // Why: Avoids unnecessary HTTP request after item deletion
+            // Impact: Removes network latency for UI updates on deletes
+            // Measurement: Verify DELETE requests complete without triggering GET requests
+            allPrompts = allPrompts.filter(p => p.id !== id);
+
             renderWelcomeScreen();
         } catch (error) {
             console.error(error);
@@ -102,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>Select a prompt from the list or create a new one to get started.</p>
             </div>
         `;
-        renderPromptList();
+        renderPromptList(searchInput.value);
     };
 
     const renderPromptView = (prompt) => {
@@ -204,9 +229,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 const importedPrompts = JSON.parse(event.target.result);
                 // Simple import: just replace everything. A more robust implementation might merge.
                 // We'll call our backend to write the new data.
-                const savePromises = importedPrompts.map(p => savePrompt(p));
+
+                // ⚡ Bolt Optimization: Batch DOM updates during import
+                // Why: Avoids O(N) re-renders when saving multiple items
+                // Impact: Substantial UI thread performance gain during bulk actions
+                // Measurement: Render time during import should be constant, not linear
+                const savePromises = importedPrompts.map(p => savePrompt(p, true));
                 await Promise.all(savePromises);
-                await fetchPrompts(); // Refresh to get the final state
+
+                // Explicitly render once after all updates
+                renderPromptList(searchInput.value);
                 renderWelcomeScreen();
             } catch (err) {
                 alert('Error importing file. Make sure it is a valid JSON file.');
