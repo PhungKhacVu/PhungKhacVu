@@ -6,11 +6,21 @@
     "basePrompt": "Với vai trò là một Bếp trưởng R&D Bakery chuyên nghiệp với 20 năm kinh nghiệm, hãy sáng tạo một công thức chi tiết cho một loại bánh croissant độc đáo kết hợp hương vị Á Đông của {flavor_A} và hương vị phương Tây của {flavor_B}. Hãy trình bày công thức theo từng bước, bao gồm cả mẹo và lý do cho các lựa chọn kỹ thuật của bạn.",
     "techniqueCategory": "PHẦN 1: KỸ THUẬT CƠ BẢN",
     "primaryTechnique": "Role Prompting (Persona Setting)",
-    "secondaryTechniques": ["Instruction Prompting"],
+    "secondaryTechniques": [
+      "Instruction Prompting"
+    ],
     "useCase": "Creative generation",
     "parameters": [
-      {"name": "flavor_A", "type": "text", "defaultValue": "trà xanh matcha"},
-      {"name": "flavor_B", "type": "text", "defaultValue": "quả mâm xôi (raspberry)"}
+      {
+        "name": "flavor_A",
+        "type": "text",
+        "defaultValue": "trà xanh matcha"
+      },
+      {
+        "name": "flavor_B",
+        "type": "text",
+        "defaultValue": "quả mâm xôi (raspberry)"
+      }
     ],
     "notes": "Hiệu quả cao với các model có khả năng sáng tạo (GPT-4, Claude 3)."
   },
@@ -36,7 +46,11 @@
     "secondaryTechniques": [],
     "useCase": "Creative generation",
     "parameters": [
-        {"name": "product_name", "type": "text", "defaultValue": "Bánh Opera Cà Phê"}
+      {
+        "name": "product_name",
+        "type": "text",
+        "defaultValue": "Bánh Opera Cà Phê"
+      }
     ],
     "notes": "Rất hiệu quả để kiểm soát văn phong (tone) và định dạng (format) của đầu ra."
   },
@@ -71,7 +85,9 @@
     "basePrompt": "Tôi định tạo ra một loại bánh mì sourdough sử dụng nước cốt dừa thay cho một phần nước. Hãy đóng vai một 'người phản biện' (devil's advocate). Đưa ra các lập luận phản đối ý tưởng này, chỉ ra các vấn đề tiềm ẩn về hóa học, kết cấu, và hương vị có thể xảy ra. Sau đó, hãy bác bỏ chính những lập luận đó và đề xuất giải pháp để vượt qua các thách thức.",
     "techniqueCategory": "PHẦN 2: KỸ THUẬT SUY LUẬN",
     "primaryTechnique": "The Perspective Inversion",
-    "secondaryTechniques": ["Role Prompting"],
+    "secondaryTechniques": [
+      "Role Prompting"
+    ],
     "useCase": "Strategic planning",
     "parameters": [],
     "notes": "Kỹ thuật này giúp lường trước các rủi ro và củng cố ý tưởng."
@@ -95,11 +111,21 @@
     "basePrompt": "Dựa trên công thức sau cho bánh {product_name}, hãy phân tích và ước tính thông tin dinh dưỡng cho mỗi khẩu phần. Trả về kết quả dưới dạng một đối tượng JSON và chỉ JSON mà thôi, không có bất kỳ văn bản giải thích nào khác.\n\nCông thức:\n{recipe}\n\nĐịnh dạng JSON yêu cầu:\n{\n  \"productName\": \"tên sản phẩm\",\n  \"servingSize\": \"kích thước khẩu phần (e.g., '1 cái, 80g')\",\n  \"calories\": số,\n  \"fat\": {\n    \"total\": \"Xg\",\n    \"saturated\": \"Xg\"\n  },\n  \"carbohydrates\": {\n    \"total\": \"Xg\",\n    \"sugar\": \"Xg\"\n  },\n  \"protein\": \"Xg\"\n}",
     "techniqueCategory": "PHẦN 7: KỸ THUẬT CHUYÊN BIỆT",
     "primaryTechnique": "Output Constraints",
-    "secondaryTechniques": ["Instruction Prompting"],
+    "secondaryTechniques": [
+      "Instruction Prompting"
+    ],
     "useCase": "API responses, data pipelines",
     "parameters": [
-      {"name": "product_name", "type": "text", "defaultValue": "Bông Lan Trứng Muối"},
-      {"name": "recipe", "type": "textarea", "defaultValue": "Bột mì: 100g, Trứng: 4 quả, Đường: 80g, Dầu ăn: 40ml, Sốt trứng muối: 100g..."}
+      {
+        "name": "product_name",
+        "type": "text",
+        "defaultValue": "Bông Lan Trứng Muối"
+      },
+      {
+        "name": "recipe",
+        "type": "textarea",
+        "defaultValue": "Bột mì: 100g, Trứng: 4 quả, Đường: 80g, Dầu ăn: 40ml, Sốt trứng muối: 100g..."
+      }
     ],
     "notes": "Cực kỳ hữu ích khi cần dữ liệu đầu ra có cấu trúc để tích hợp với các hệ thống khác."
   },
@@ -110,10 +136,16 @@
     "basePrompt": "Nhiệm vụ: Phát triển một dòng sản phẩm bánh su kem (choux au craquelin) mới cho mùa hè.\n\nPrompt 1: Brainstorm ý tưởng (Bạn đang ở đây)\nVới vai trò là một chuyên gia R&D, hãy liệt kê 5 chủ đề hương vị độc đáo cho bánh su kem, phù hợp với không khí mùa hè, tập trung vào các loại trái cây nhiệt đới.\n\n---\n(Sau khi nhận được output, bạn sẽ sử dụng nó cho prompt tiếp theo)\n---\n\nPrompt 2: Lựa chọn và phát triển công thức\nDựa trên ý tưởng '{chosen_idea}' từ bước trước, hãy phát triển một công thức chi tiết cho cả phần vỏ bánh (choux), phần craquelin giòn, và phần nhân kem (pastry cream).",
     "techniqueCategory": "PHẦN 3: KỸ THUẬT NÂNG CAO",
     "primaryTechnique": "Prompt Chaining",
-    "secondaryTechniques": ["Role Prompting"],
+    "secondaryTechniques": [
+      "Role Prompting"
+    ],
     "useCase": "Multi-step workflows, report generation",
     "parameters": [
-      {"name": "chosen_idea", "type": "text", "defaultValue": "Su kem Xoài-Dừa"}
+      {
+        "name": "chosen_idea",
+        "type": "text",
+        "defaultValue": "Su kem Xoài-Dừa"
+      }
     ],
     "notes": "Mô phỏng một quy trình làm việc thực tế, giúp quản lý các nhiệm vụ phức tạp."
   },
@@ -160,10 +192,16 @@
     "basePrompt": "Dựa vào thông tin được cung cấp trong phần 'Kiến Thức Nền' dưới đây, hãy trả lời câu hỏi của người dùng.\n\n### KIẾN THỨC NỀN ###\n{knowledge_base}\n### HẾT KIẾN THỨC NỀN ###\n\nCâu hỏi: Tôi muốn làm bánh mì không chứa gluten, dựa vào kiến thức nền, loại bột nào là lựa chọn tốt nhất để thay thế bột mì và tôi cần lưu ý điều gì về liều lượng men?",
     "techniqueCategory": "PHẦN 5: KỸ THUẬT AUGMENTATION & RETRIEVAL",
     "primaryTechnique": "RAG (Retrieval Augmented Generation)",
-    "secondaryTechniques": ["Delimiters Usage"],
+    "secondaryTechniques": [
+      "Delimiters Usage"
+    ],
     "useCase": "Chatbots, Q&A systems, documentation",
     "parameters": [
-        {"name": "knowledge_base", "type": "textarea", "defaultValue": "- Bột kiều mạch (Buckwheat flour): Tạo cấu trúc tốt, hương vị đậm. Cần kết hợp với các loại bột khác.\n- Bột hạnh nhân (Almond flour): Ít carb, giàu protein, tạo độ ẩm. Bánh sẽ đặc hơn.\n- Bột dừa (Coconut flour): Hút ẩm rất mạnh, cần tăng lượng chất lỏng trong công thức.\n- Men nở (Yeast) hoạt động dựa trên đường và tinh bột. Các loại bột không gluten thường có ít tinh bột hơn, có thể cần thêm một ít đường hoặc mật ong để kích hoạt men hiệu quả."}
+      {
+        "name": "knowledge_base",
+        "type": "textarea",
+        "defaultValue": "- Bột kiều mạch (Buckwheat flour): Tạo cấu trúc tốt, hương vị đậm. Cần kết hợp với các loại bột khác.\n- Bột hạnh nhân (Almond flour): Ít carb, giàu protein, tạo độ ẩm. Bánh sẽ đặc hơn.\n- Bột dừa (Coconut flour): Hút ẩm rất mạnh, cần tăng lượng chất lỏng trong công thức.\n- Men nở (Yeast) hoạt động dựa trên đường và tinh bột. Các loại bột không gluten thường có ít tinh bột hơn, có thể cần thêm một ít đường hoặc mật ong để kích hoạt men hiệu quả."
+      }
     ],
     "notes": "Giúp AI trả lời chính xác hơn và giảm thiểu việc 'bịa' thông tin. Dấu ### là một ví dụ về Delimiters."
   },
@@ -186,7 +224,9 @@
     "basePrompt": "Bối cảnh: Một khách hàng phàn nàn trên mạng xã hội rằng bánh của cửa hàng chúng ta bị mốc chỉ sau một ngày.\n\nHãy soạn một câu trả lời cho khách hàng này. Trước khi viết, hãy tuân thủ các nguyên tắc sau:\n1.  Luôn thể hiện sự đồng cảm và xin lỗi một cách chân thành.\n2.  Không bao giờ đổ lỗi cho khách hàng (ví dụ: 'do khách bảo quản sai cách').\n3.  Đề xuất một giải pháp cụ thể và mang lại lợi ích cho khách hàng (ví dụ: đổi sản phẩm mới và tặng kèm voucher).\n4.  Mời khách hàng thảo luận riêng tư để giải quyết vấn đề.\n\nDựa trên các nguyên tắc đó, hãy viết câu trả lời.",
     "techniqueCategory": "PHẦN 6: KỸ THUẬT KIỂM SOÁT & BẢO MẬT",
     "primaryTechnique": "Constitutional AI",
-    "secondaryTechniques": ["Role Prompting"],
+    "secondaryTechniques": [
+      "Role Prompting"
+    ],
     "useCase": "Ensure ethical, safe responses",
     "parameters": [],
     "notes": "Huấn luyện AI hành xử theo một bộ quy tắc đạo đức định sẵn, rất quan trọng trong giao tiếp với khách hàng."
@@ -222,7 +262,9 @@
     "basePrompt": "Đây là một nhiệm vụ cực kỳ quan trọng đối với sự nghiệp của tôi.\n\nHãy đóng vai một chuyên gia marketing ẩm thực hàng đầu. Tôi cần một kế hoạch ra mắt sản phẩm bánh sừng bò hai màu (bi-color croissant) tại thị trường Việt Nam. Kế hoạch cần phải chi tiết, sáng tạo, và có khả năng tạo ra một cơn sốt truyền thông. Hãy dồn hết tâm huyết của bạn vào việc này.",
     "techniqueCategory": "PHẦN 3: KỸ THUẬT NÂNG CAO",
     "primaryTechnique": "EmotionPrompt",
-    "secondaryTechniques": ["Role Prompting"],
+    "secondaryTechniques": [
+      "Role Prompting"
+    ],
     "useCase": "High-stakes tasks, important queries",
     "parameters": [],
     "notes": "Một kỹ thuật dựa trên tâm lý học, có thể cải thiện đáng kể chất lượng phản hồi cho các nhiệm vụ quan trọng."
@@ -246,7 +288,13 @@
     "basePrompt": "### BỐI CẢNH ###\nVới vai trò là Giám đốc R&D của một thương hiệu bánh ngọt cao cấp, bạn được giao nhiệm vụ phát triển một sản phẩm chủ lực mới cho mùa lễ hội cuối năm.\n\n### YÊU CẦU ###\nSử dụng các kỹ thuật sau đây, hãy trình bày một kế hoạch chi tiết:\n1.  **Generated Knowledge:** Đầu tiên, hãy viết một đoạn tổng quan về xu hướng hương vị bánh ngọt cho mùa lễ hội năm nay.\n2.  **Tree of Thoughts:** Dựa trên xu hướng đó, hãy phát triển 3 ý tưởng sản phẩm khác nhau. Tự đánh giá và chọn ra 1 ý tưởng tiềm năng nhất.\n3.  **Instruction Prompting & Role Prompting:** Với ý tưởng đã chọn, hãy viết một bản công thức chi tiết, chuyên nghiệp.\n4.  **Output Constraints:** Cuối cùng, tạo một đối tượng JSON tóm tắt các thông số chính của sản phẩm (tên, mô tả ngắn, giá bán dự kiến, chi phí nguyên vật liệu ước tính).\n\nĐây là một dự án quan trọng, hãy thể hiện năng lực tốt nhất của bạn.",
     "techniqueCategory": "PHẦN 8: KỸ THUẬT MỚI & EXPERIMENTAL",
     "primaryTechnique": "Mixture-of-Agents",
-    "secondaryTechniques": ["Generated Knowledge Prompting", "Tree of Thoughts", "Role Prompting", "Output Constraints", "EmotionPrompt"],
+    "secondaryTechniques": [
+      "Generated Knowledge Prompting",
+      "Tree of Thoughts",
+      "Role Prompting",
+      "Output Constraints",
+      "EmotionPrompt"
+    ],
     "useCase": "Enterprise workflows",
     "parameters": [],
     "notes": "Một ví dụ điển hình về cách kết hợp nhiều kỹ thuật để giải quyết một bài toán kinh doanh phức tạp từ đầu đến cuối."
