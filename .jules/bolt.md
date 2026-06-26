@@ -1,0 +1,3 @@
+## 2024-06-26 - N+1 Network Bottleneck on Bulk Import
+**Learning:** The frontend iterates over `savePrompt` for each imported prompt, which inherently fired `fetchPrompts` causing O(N) network refetches. Even worse, `renderWelcomeScreen` was internally wiping active search filters because it called `renderPromptList` without maintaining current state.
+**Action:** When performing bulk updates, pass an explicit skipRender flag to avoid per-item DOM layout thrashing, rely on manual local state cache updates over HTTP network refreshes, and explicitly invoke rendering functions with correct state arguments (like searchInput.value) *after* state-destroying resets like `renderWelcomeScreen()`.
