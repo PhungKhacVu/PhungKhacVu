@@ -1,0 +1,3 @@
+## 2024-06-28 - Optimizing Vanilla JS State Updates
+**Learning:** In a vanilla JS app, replacing full HTTP data refetches (like `fetchPrompts()`) with local state updates during individual CRUD operations is important, but crucial during bulk operations (like importing files). Failing to skip individual re-renders and avoiding full data fetches during loops causes severe N+1 HTTP request bottlenecks and layout thrashing.
+**Action:** Always consider upserting local state arrays instead of blind pushes, and provide a way to skip individual UI re-renders (e.g. `skipRender` flag) when processing bulk operations to batch DOM updates effectively.

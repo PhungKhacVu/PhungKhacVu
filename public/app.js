@@ -27,7 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const savePrompt = async (promptData) => {
+    // ⚡ Bolt Optimization: Local state update
+    // Why: Prevents full N+1 HTTP data refetches during bulk saves and skips rendering to prevent layout thrashing
+    // Impact: Massive reduction in network load and UI freezing during imports
+    // Measurement: UI performance during import
+    const savePrompt = async (promptData, skipRender = false) => {
         const isUpdating = !!promptData.id;
         const url = isUpdating ? `${API_URL}/${promptData.id}` : API_URL;
         const method = isUpdating ? 'PUT' : 'POST';
@@ -39,23 +43,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(promptData),
             });
             if (!response.ok) throw new Error('Failed to save prompt');
-            await fetchPrompts(); // Refresh the list
             const savedPrompt = await response.json();
-            currentPromptId = savedPrompt.id;
-            renderPromptView(savedPrompt); // View the newly saved/created prompt
+
+            // Local state update via upsert
+            const index = allPrompts.findIndex(p => p.id === savedPrompt.id);
+            if (index !== -1) {
+                allPrompts[index] = savedPrompt;
+            } else {
+                allPrompts.push(savedPrompt);
+            }
+
+            if (!skipRender) {
+                currentPromptId = savedPrompt.id;
+                renderPromptList(searchInput.value); // Re-render to update the list locally
+                renderPromptView(savedPrompt); // View the newly saved/created prompt
+            }
         } catch (error) {
             console.error(error);
         }
     };
 
+    // ⚡ Bolt Optimization: Local state update
+    // Why: Prevents full HTTP data refetch when a single item is deleted
+    // Impact: Avoids unnecessary network request and speeds up UI response
+    // Measurement: UI performance during deletion
     const deletePrompt = async (id) => {
         if (!confirm('Are you sure you want to delete this prompt?')) return;
 
         try {
             const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Failed to delete prompt');
-            await fetchPrompts();
+            allPrompts = allPrompts.filter(p => p.id !== id);
             renderWelcomeScreen();
+            renderPromptList(searchInput.value); // Re-render local list to preserve filter
         } catch (error) {
             console.error(error);
         }
@@ -161,6 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
+            if (data.id === '') delete data.id; // Fix: Prevent Express overwriting generated ID
             savePrompt(data);
         });
 
@@ -199,15 +220,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!file) return;
 
         const reader = new FileReader();
+        // ⚡ Bolt Optimization: Batch DOM updates
+        // Why: Prevents layout thrashing by skipping intermediate UI renders during mass updates
+        // Impact: Fast file imports with minimal main thread blocking
+        // Measurement: Time to import a large file
         reader.onload = async (event) => {
             try {
                 const importedPrompts = JSON.parse(event.target.result);
                 // Simple import: just replace everything. A more robust implementation might merge.
                 // We'll call our backend to write the new data.
-                const savePromises = importedPrompts.map(p => savePrompt(p));
+                const savePromises = importedPrompts.map(p => savePrompt(p, true));
                 await Promise.all(savePromises);
-                await fetchPrompts(); // Refresh to get the final state
                 renderWelcomeScreen();
+                renderPromptList(searchInput.value); // Final batch render
             } catch (err) {
                 alert('Error importing file. Make sure it is a valid JSON file.');
                 console.error(err);
