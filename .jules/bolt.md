@@ -1,0 +1,3 @@
+## 2024-05-20 - Prevented O(N) layout thrashing by avoiding full re-renders for active state updates
+**Learning:** In vanilla JavaScript, calling a function like `renderPromptList()` to update the active item's visual state recreates the entire DOM list. This causes an O(N) layout thrashing (where N is the number of items) and is extremely inefficient for simply highlighting a clicked item.
+**Action:** When updating the active state of an element in a list, always use direct DOM manipulation (e.g., querying elements and toggling classes like `.active`) instead of re-rendering the full list component.
