@@ -1,0 +1,3 @@
+## 2024-10-31 - [Local State vs Full Refetch]
+ **Learning:** Calling full data refetches (like `fetchPrompts()`) after every mutation causes massive N+1 HTTP request bottlenecks and unnecessary network overhead, especially during bulk operations (like frontend file imports that iterate over `savePrompt`). Updating active item states by calling full render functions also causes O(N) layout thrashing.
+ **Action:** Prioritize local state updates (upsert logic for arrays, directly manipulating classes) after mutations to avoid network and main-thread bottlenecks, while maintaining sync with the UI.
