@@ -87,7 +87,17 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             item.addEventListener('click', () => {
                 currentPromptId = prompt.id;
-                renderPromptList(searchInput.value); // Re-render to update active state
+
+                // ⚡ Bolt Optimization: Avoid O(N) DOM list recreation for state updates
+                // Why: Re-rendering the entire list just to change the active class causes layout thrashing
+                // Impact: Reduces O(N) DOM operations to O(1) class updates
+                // Measurement: Faster click response times in lists with many items
+                const currentActive = promptListNav.querySelector('.active');
+                if (currentActive) {
+                    currentActive.classList.remove('active');
+                }
+                item.classList.add('active');
+
                 renderPromptView(prompt);
             });
             promptListNav.appendChild(item);
