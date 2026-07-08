@@ -27,7 +27,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const savePrompt = async (promptData) => {
+    const savePrompt = async (promptData, skipRender = false) => {
+        // ⚡ Bolt Optimization: Local State Update & Rendering Control
+        // Why: Avoid full list refetches from the server after every save, and batch UI renders during bulk imports to fix N+1 bottlenecks.
+        // Impact: Eliminates HTTP GET on save; prevents O(N^2) render thrashing during imports.
+        // Measurement: Observe network tab (0 GET requests on save) and near-instant UI response on bulk import.
+
+        // Prevent empty 'id' from overwriting generated UUIDs on the backend
+        if (!promptData.id) delete promptData.id;
+
         const isUpdating = !!promptData.id;
         const url = isUpdating ? `${API_URL}/${promptData.id}` : API_URL;
         const method = isUpdating ? 'PUT' : 'POST';
@@ -39,10 +47,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(promptData),
             });
             if (!response.ok) throw new Error('Failed to save prompt');
-            await fetchPrompts(); // Refresh the list
+
             const savedPrompt = await response.json();
+
+            // Local state update instead of fetchPrompts()
+            const existingIndex = allPrompts.findIndex(p => p.id === savedPrompt.id);
+            if (existingIndex !== -1) {
+                allPrompts[existingIndex] = savedPrompt;
+            } else {
+                allPrompts.push(savedPrompt);
+            }
+
             currentPromptId = savedPrompt.id;
-            renderPromptView(savedPrompt); // View the newly saved/created prompt
+
+            if (!skipRender) {
+                renderPromptList(searchInput.value);
+                renderPromptView(savedPrompt);
+            }
         } catch (error) {
             console.error(error);
         }
@@ -54,8 +75,12 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Failed to delete prompt');
-            await fetchPrompts();
+
+            // Local state update instead of fetchPrompts()
+            allPrompts = allPrompts.filter(p => p.id !== id);
+
             renderWelcomeScreen();
+            renderPromptList(searchInput.value); // Preserve search filter after welcome screen reset
         } catch (error) {
             console.error(error);
         }
@@ -204,10 +229,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const importedPrompts = JSON.parse(event.target.result);
                 // Simple import: just replace everything. A more robust implementation might merge.
                 // We'll call our backend to write the new data.
-                const savePromises = importedPrompts.map(p => savePrompt(p));
+                // Pass skipRender=true to batch rendering and avoid N+1 UI updates
+                const savePromises = importedPrompts.map(p => savePrompt(p, true));
                 await Promise.all(savePromises);
-                await fetchPrompts(); // Refresh to get the final state
+
+                // Final UI update after all local state changes are complete
                 renderWelcomeScreen();
+                renderPromptList(searchInput.value);
             } catch (err) {
                 alert('Error importing file. Make sure it is a valid JSON file.');
                 console.error(err);
